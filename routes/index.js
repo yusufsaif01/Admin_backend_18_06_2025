@@ -1,0 +1,26 @@
+const express = require('express');
+const locationRoutes = require('./location.rest');
+const memberRoutes = require('./member.rest');
+const memberTypeRoutes = require('./member-type.rest');
+const playerSpecializationRoutes = require('./player-specialization.rest');
+const playerDocuments = require('./player-documents.rest');
+const clubAcademyDocuments = require('./club-academy-documents.rest');
+
+class Route {
+	loadRoutes(app) {
+		const apiRouter = express.Router();
+
+		locationRoutes(apiRouter);
+		memberRoutes(apiRouter);
+		memberTypeRoutes(apiRouter);
+		playerSpecializationRoutes(apiRouter);
+		playerDocuments(apiRouter);
+		clubAcademyDocuments(apiRouter);
+
+		app.use('/api', apiRouter);
+		app.use("/apidocs", express.static("apidocs/doc"));
+		app.use("/uploads", express.static("uploads"));
+	}
+}
+
+module.exports = new Route();
