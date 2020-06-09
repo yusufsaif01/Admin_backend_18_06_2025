@@ -1,0 +1,72 @@
+{
+    "email": {
+        "doc": "credential for google authentication",
+        "format": "String",
+        "default": "",
+        "env": "MAILER_USER",
+        "arg": "mailer_user"
+    },
+    "password": {
+        "doc": "credential for google authentication",
+        "format": "String",
+        "default": "",
+        "env": "MAILER_USER_PASSWORD",
+        "arg": "mailer_user_password"
+    },
+    "fromEmail": {
+        "doc": "email",
+        "format": "String",
+        "default": "support@4thpointer.in",
+        "env": "MAILER_FROM_EMAIL",
+        "arg": "mailer_from_email"
+    },
+    "host": {
+        "doc": "mailer host",
+        "format": "String",
+        "default": "139.59.77.111",
+        "env": "MAILER_HOST",
+        "arg": "mailer_host"
+    },
+    "port": {
+        "doc": "mailer port",
+        "format": "Number",
+        "default": 1025,
+        "env": "MAILER_PORT",
+        "arg": "mailer_port"
+    },
+    "secure": {
+        "doc": "mailer secure",
+        "format": "Boolean",
+        "default": false,
+        "env": "MAILER_IS_SECURE",
+        "arg": "mailer_is_secure"
+    },
+    "provider": {
+        "doc": "mailer provider - MAIL_HOG, AWS, GOOGLE",
+        "format": "String",
+        "default": "MAIL_HOG",
+        "env": "MAILER_PROVIDER",
+        "arg": "mailer_provider"
+    },
+    "accessKey": {
+        "doc": "mail access key",
+        "format": "String",
+        "default": "",
+        "env": "MAILER_ACCESS_KEY",
+        "arg": "mailer_access_key"
+    },
+    "accessKeySecret": {
+        "doc": "mail access secret",
+        "format": "String",
+        "default": "",
+        "env": "MAILER_ACCESS_SECRET",
+        "arg": "mailer_access_secret"
+    },
+    "region": {
+        "doc": "mail region",
+        "format": "String",
+        "default": "",
+        "env": "MAILER_REGION",
+        "arg": "mailer_region"
+    }
+}
