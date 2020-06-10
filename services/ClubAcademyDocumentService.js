@@ -1,5 +1,6 @@
 const errors = require("../errors");
 const ResponseMessage = require("../constants/ResponseMessage");
+const PlayerType = require("../constants/PlayerType");
 const ProfileStatus = require("../constants/ProfileStatus");
 const DocumentStatus = require("../constants/DocumentStatus");
 const LoginUtility = require("../db/utilities/LoginUtility");
@@ -120,7 +121,7 @@ class ClubAcademyDocumentService {
         {
           $set: {
             profile_status: {
-              status: ProfileStatus.DISAPPROVED,
+              status: ProfileStatus.NON_VERIFIED,
               remarks,
             },
           },
