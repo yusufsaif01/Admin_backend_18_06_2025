@@ -3,6 +3,6 @@ module.exports = ({ email, documentType, name, memberType }) => {
     to: email,
     subject: "Your document details is verified",
     // html: "",
-    text: `${documentType} document details for ${name} has been approved successfully by YFTChain.`,
+    text: `${documentType.charAt(0).toUpperCase() + documentType.slice(1)} document details for ${name} has been approved successfully by YFTChain.`,
   };
 };
