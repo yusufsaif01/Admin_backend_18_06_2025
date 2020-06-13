@@ -132,7 +132,7 @@ class UserService extends BaseService {
             let baseOptions = {
                 conditions: conditions,
                 options: options,
-                projection: { name: 1, associated_players: 1, email: 1, user_id: 1 }
+                projection: { name: 1, email: 1, user_id: 1 }
             };
 
             let toBePopulatedOptions = {
@@ -341,12 +341,6 @@ class UserService extends BaseService {
             }
             else {
                 filterArr.push({ name: new RegExp(filters.search, 'i') })
-                let num = Number(filters.search)
-                if (!isNaN(num)) {
-                    if (num === 0)
-                        filterArr.push({ associated_players: null })
-                    filterArr.push({ associated_players: num })
-                }
             }
             filterArr.push({
                 email: new RegExp(filters.search, "i")
