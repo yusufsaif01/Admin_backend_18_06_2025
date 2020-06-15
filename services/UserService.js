@@ -16,6 +16,7 @@ const ConnectionUtility = require("../db/utilities/ConnectionUtility");
 const ConnectionRequestUtility = require('../db/utilities/ConnectionRequestUtility');
 const CONNECTION_REQUEST = require('../constants/ConnectionRequestStatus');
 const redisServiceInst = require('../redis/RedisService');
+const FootPlayerUtility = require('../db/utilities/FootPlayerUtility');
 
 class UserService extends BaseService {
 
@@ -27,6 +28,7 @@ class UserService extends BaseService {
         this.connectionUtilityInst = new ConnectionUtility();
         this.connectionRequestUtilityInst = new ConnectionRequestUtility();
         this.loginUtilityInst = new LoginUtility();
+        this.footPlayerUtilityInst = new FootPlayerUtility();
     }
 
     async getList(requestedData = {}) {
@@ -204,9 +206,11 @@ class UserService extends BaseService {
                 await this.manageConnection(user_id);
                 if (loginDetails.member_type === MEMBER.PLAYER) {
                     await this.playerUtilityInst.findOneAndUpdate({ user_id: user_id }, { deleted_at: date })
+                    await this.footPlayerUtilityInst.updateMany({ "send_to.user_id": user_id }, { is_deleted: true, deleted_at: date });
                 }
                 else {
                     await this.clubAcademyUtilityInst.findOneAndUpdate({ user_id: user_id }, { deleted_at: date })
+                    await this.footPlayerUtilityInst.updateMany({ sent_by: user_id }, { is_deleted: true, deleted_at: date });
                 }
                 await redisServiceInst.clearAllTokensFromCache(user_id);
                 return Promise.resolve()
