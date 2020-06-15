@@ -79,7 +79,7 @@ class PlayerDocumentsService {
       );
 
       // send profile approved notification
-      await this.emailService.profileVerified(user.email);
+      // await this.emailService.profileVerified(user.email);
     }
   }
 
@@ -155,7 +155,7 @@ class PlayerDocumentsService {
 
       if (updated.nModified) {
         // send email for profile disapproval.
-        await this.emailService.profileDisapproved(user.email, remarks);
+        // await this.emailService.profileDisapproved(user.email, remarks);
       }
     }
   }
