@@ -7,12 +7,14 @@ const LoginUtility = require("../db/utilities/LoginUtility");
 const EmailService = require("./EmailService");
 const MemberType = require("../constants/MemberType");
 const ClubAcademyUtility = require("../db/utilities/ClubAcademyUtility");
+const AdminUtility = require("../db/utilities/AdminUtility");
 
 class ClubAcademyDocumentService {
   constructor() {
     this.clubAcademyInst = new ClubAcademyUtility();
     this.loginDetailsInst = new LoginUtility();
     this.emailService = new EmailService();
+    this.adminInst = new AdminUtility();
   }
 
   async getUserDocuments(user_id) {
@@ -62,11 +64,7 @@ class ClubAcademyDocumentService {
     });
 
     if (res.nModified) {
-      this.emailService.documentApproval({
-        email: user.email,
-        documentType: type,
-        name: user.name,
-      });
+      this.documentApprovalNotification(user, type);
     }
 
     // reload model
@@ -85,6 +83,31 @@ class ClubAcademyDocumentService {
       });
       await this.emailService.profileVerified(user.email);
     }
+  }
+
+  async documentApprovalNotification(user, type) {
+    const emailPayload = {
+      email: user.email,
+      documentType: type,
+      name: user.name,
+    };
+    this.emailService.documentApproval(emailPayload);
+
+    // send the same notification to all registered admins.
+    let admins = await this.getAdmins();
+    admins.map((admin) => {
+      emailPayload.email = admin.email;
+      this.emailService.documentApproval(emailPayload);
+    });
+  }
+
+  async getAdmins() {
+    return await this.adminInst.find(
+      {},
+      {
+        email: 1,
+      }
+    );
   }
 
   async disapproveHandler(user, type, remarks) {
@@ -106,12 +129,7 @@ class ClubAcademyDocumentService {
     if (res.nModified) {
       
       // email notification
-      this.emailService.documentDisApproval({
-        email: user.email,
-        documentType: type,
-        name: user.name,
-        reason: remarks
-      });
+      this.documentDisApprovalNotification(user, type, remarks);
 
       let updated = await this.loginDetailsInst.updateOne(
         {
@@ -132,6 +150,22 @@ class ClubAcademyDocumentService {
         await this.emailService.profileDisapproved(user.email, remarks);
       }
     }
+  }
+
+  async documentDisApprovalNotification(user, type, remarks) {
+    const emailPayload = {
+      email: user.email,
+      documentType: type,
+      name: user.name,
+      reason: remarks
+    };
+    this.emailService.documentDisApproval(emailPayload);
+
+    let admins = await this.getAdmins();
+    admins.map((admin) => {
+      emailPayload.email = admin.email;
+      this.emailService.documentDisApproval(emailPayload);
+    });
   }
 }
 

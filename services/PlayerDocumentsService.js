@@ -5,12 +5,14 @@ const ProfileStatus = require("../constants/ProfileStatus");
 const DocumentStatus = require("../constants/DocumentStatus");
 const LoginUtility = require("../db/utilities/LoginUtility");
 const EmailService = require("./EmailService");
+const AdminUtility = require("../db/utilities/AdminUtility");
 
 class PlayerDocumentsService {
   constructor() {
     this.playerDetailsInst = new PlayerUtility();
     this.loginDetailsInst = new LoginUtility();
     this.emailService = new EmailService();
+    this.adminInst = new AdminUtility();
   }
 
   async getUserDocuments(user_id) {
@@ -59,13 +61,8 @@ class PlayerDocumentsService {
     });
 
     if (res.nModified) {
-
       // document approval
-      this.emailService.documentApproval({
-        email: user.email,
-        documentType: type,
-        name: [user.first_name, user.last_name].join(" "),
-      });
+      this.documentApprovalNotification(user, type);
 
       // profile approval
       await this.loginDetailsInst.updateOne(
@@ -86,6 +83,32 @@ class PlayerDocumentsService {
     }
   }
 
+  async documentApprovalNotification(user, type) {
+    const emailPayload = {
+      email: user.email,
+      documentType: type,
+      name: [user.first_name, user.last_name].join(" "),
+    };
+    // user
+    this.emailService.documentApproval(emailPayload);
+
+    // send the same notification to all registered admins.
+    let admins = await this.getAdmins();
+    admins.map((admin) => {
+      emailPayload.email = admin.email;
+      this.emailService.documentApproval(emailPayload);
+    });
+  }
+
+  async getAdmins() {
+    return await this.adminInst.find(
+      {},
+      {
+        email: 1,
+      }
+    );
+  }
+
   async disapproveHandler(user, type, remarks) {
     const $where = {
       user_id: user.user_id,
@@ -102,29 +125,23 @@ class PlayerDocumentsService {
       },
     });
     if (res.nModified) {
-
       /**
        * Send email notification
        */
-      this.emailService.documentDisApproval({
-        email: user.email,
-        documentType: type,
-        name: [user.first_name, user.last_name].join(" "),
-        reason: remarks,
-      });
+      this.documentDisApprovalNotification(user, type, remarks);
 
       /**
        * Update profile status
        * 1. find existing verified user
        * 2. change status
-       * 
+       *
        * if the user is already disapproved, modified documents will be zero,
        * avoiding sending emails multiple times.
        */
       let updated = await this.loginDetailsInst.updateOne(
         {
           user_id: user.user_id,
-          'profile_status.status': ProfileStatus.VERIFIED,
+          "profile_status.status": ProfileStatus.VERIFIED,
         },
         {
           $set: {
@@ -140,8 +157,26 @@ class PlayerDocumentsService {
         // send email for profile disapproval.
         await this.emailService.profileDisapproved(user.email, remarks);
       }
-
     }
+  }
+
+  async documentDisApprovalNotification(user, type, remarks) {
+    const emailPayload = {
+      email: user.email,
+      documentType: type,
+      name: [user.first_name, user.last_name].join(" "),
+      reason: remarks,
+    };
+
+    // user notification
+    this.emailService.documentDisApproval(emailPayload);
+
+    // send the same notification to all registered admins.
+    let admins = await this.getAdmins();
+    admins.map((admin) => {
+      emailPayload.email = admin.email;
+      this.emailService.documentDisApproval(emailPayload);
+    });
   }
 }
 
