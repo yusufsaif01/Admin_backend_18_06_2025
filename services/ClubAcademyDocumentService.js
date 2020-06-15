@@ -81,7 +81,7 @@ class ClubAcademyDocumentService {
           },
         },
       });
-      await this.emailService.profileVerified(user.email);
+      // await this.emailService.profileVerified(user.email);
     }
   }
 
@@ -147,7 +147,7 @@ class ClubAcademyDocumentService {
       );
       if (updated.nModified) {
         // send email for profile disapproval.
-        await this.emailService.profileDisapproved(user.email, remarks);
+        // await this.emailService.profileDisapproved(user.email, remarks);
       }
     }
   }
