@@ -63,7 +63,7 @@ class PlayerDocumentsService {
 
     if (res.nModified) {
       // document approval
-      this.documentApprovalNotification(user, type);
+      this.documentApprovalNotification(user);
 
       // profile approval
       await this.loginDetailsInst.updateOne(
@@ -84,10 +84,9 @@ class PlayerDocumentsService {
     }
   }
 
-  async documentApprovalNotification(user, type) {
+  async documentApprovalNotification(user) {
     const emailPayload = {
       email: user.email,
-      documentType: type,
       name: [user.first_name, user.last_name].join(" "),
       member_type: MEMBER.PLAYER
     };
@@ -130,7 +129,7 @@ class PlayerDocumentsService {
       /**
        * Send email notification
        */
-      this.documentDisApprovalNotification(user, type, remarks);
+      this.documentDisApprovalNotification(user, remarks);
 
       /**
        * Update profile status
@@ -162,10 +161,9 @@ class PlayerDocumentsService {
     }
   }
 
-  async documentDisApprovalNotification(user, type, remarks) {
+  async documentDisApprovalNotification(user, remarks) {
     const emailPayload = {
       email: user.email,
-      documentType: type,
       name: [user.first_name, user.last_name].join(" "),
       reason: remarks,
       member_type: MEMBER.PLAYER

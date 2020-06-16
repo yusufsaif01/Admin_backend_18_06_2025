@@ -1,17 +1,19 @@
-const DOCUMENT_TYPE = require('../constants/DocumentType')
 const MEMBER = require('../constants/MemberType')
 
-module.exports = ({ email, documentType, name, member_type, reason }) => {
-  documentType = documentType === DOCUMENT_TYPE.AADHAR ? "Aadhaar" : (documentType.toUpperCase());
-  let email_text = `${documentType} document details for ${name} ${member_type} has been disapproved by YFTChain due to ${reason} reason, Please update again.`
-  let email_subject = `${documentType} document details is disapproved`;
+module.exports = ({ email, name, member_type, reason }) => {
+  let email_text = "";
   if (member_type === MEMBER.PLAYER) {
-    email_text = `${documentType} details for ${name} ${member_type} has been disapproved by YFTChain due to ${reason} reason, Please update again.`
-    email_subject = `${documentType} details is disapproved`
+    email_text = `Aadhaar details for ${name} ${member_type} has been disapproved by YFTChain due to ${reason} reason, Please update again.`
+  }
+  if (member_type === MEMBER.ACADEMY) {
+    email_text = `Document details for ${name} ${member_type} has been disapproved by YFTChain due to ${reason} reason, Please update again.`
+  }
+  if (member_type === MEMBER.CLUB) {
+    email_text = `AIFF document details for ${name} ${member_type} has been disapproved by YFTChain due to ${reason} reason, Please update again.`
   }
   return {
     to: email,
-    subject: email_subject,
+    subject: "Document Disapproved",
     // html: "",
     text: email_text
   };
