@@ -6,6 +6,7 @@ const DocumentStatus = require("../constants/DocumentStatus");
 const LoginUtility = require("../db/utilities/LoginUtility");
 const EmailService = require("./EmailService");
 const AdminUtility = require("../db/utilities/AdminUtility");
+const MEMBER = require("../constants/MemberType");
 
 class PlayerDocumentsService {
   constructor() {
@@ -88,6 +89,7 @@ class PlayerDocumentsService {
       email: user.email,
       documentType: type,
       name: [user.first_name, user.last_name].join(" "),
+      member_type: MEMBER.PLAYER
     };
     // user
     this.emailService.documentApproval(emailPayload);
@@ -166,6 +168,7 @@ class PlayerDocumentsService {
       documentType: type,
       name: [user.first_name, user.last_name].join(" "),
       reason: remarks,
+      member_type: MEMBER.PLAYER
     };
 
     // user notification

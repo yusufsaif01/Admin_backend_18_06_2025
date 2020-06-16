@@ -90,6 +90,7 @@ class ClubAcademyDocumentService {
       email: user.email,
       documentType: type,
       name: user.name,
+      member_type: user.member_type
     };
     this.emailService.documentApproval(emailPayload);
 
@@ -157,7 +158,8 @@ class ClubAcademyDocumentService {
       email: user.email,
       documentType: type,
       name: user.name,
-      reason: remarks
+      reason: remarks,
+      member_type: user.member_type
     };
     this.emailService.documentDisApproval(emailPayload);
 

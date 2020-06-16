@@ -1,10 +1,18 @@
 const DOCUMENT_TYPE = require('../constants/DocumentType')
-module.exports = ({ email, documentType, name, memberType }) => {
-  documentType = documentType === DOCUMENT_TYPE.AADHAR ? "Aadhaar" : (documentType.charAt(0).toUpperCase() + documentType.slice(1));
+const MEMBER = require('../constants/MemberType')
+
+module.exports = ({ email, documentType, name, member_type }) => {
+  documentType = documentType === DOCUMENT_TYPE.AADHAR ? "Aadhaar" : (documentType.toUpperCase());
+  let email_text = `${documentType} document details for ${name} ${member_type} has been approved successfully by YFTChain.`;
+  let email_subject = `${documentType} document details is verified`
+  if (member_type === MEMBER.PLAYER) {
+    email_text = `${documentType} details for ${name} ${member_type} has been approved successfully by YFTChain.`
+    email_subject = `${documentType} details is verified`
+  }
   return {
     to: email,
-    subject: `${documentType} document details is verified`,
+    subject: email_subject,
     // html: "",
-    text: `${documentType} document details for ${name} has been approved successfully by YFTChain.`,
+    text: email_text
   };
 };
