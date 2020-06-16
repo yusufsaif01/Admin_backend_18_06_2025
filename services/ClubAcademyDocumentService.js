@@ -64,7 +64,7 @@ class ClubAcademyDocumentService {
     });
 
     if (res.nModified) {
-      this.documentApprovalNotification(user, type);
+      this.documentApprovalNotification(user);
     }
 
     // reload model
@@ -85,11 +85,11 @@ class ClubAcademyDocumentService {
     }
   }
 
-  async documentApprovalNotification(user, type) {
+  async documentApprovalNotification(user) {
     const emailPayload = {
       email: user.email,
-      documentType: type,
       name: user.name,
+      member_type: user.member_type
     };
     this.emailService.documentApproval(emailPayload);
 
@@ -129,7 +129,7 @@ class ClubAcademyDocumentService {
     if (res.nModified) {
       
       // email notification
-      this.documentDisApprovalNotification(user, type, remarks);
+      this.documentDisApprovalNotification(user, remarks);
 
       let updated = await this.loginDetailsInst.updateOne(
         {
@@ -152,12 +152,12 @@ class ClubAcademyDocumentService {
     }
   }
 
-  async documentDisApprovalNotification(user, type, remarks) {
+  async documentDisApprovalNotification(user, remarks) {
     const emailPayload = {
       email: user.email,
-      documentType: type,
       name: user.name,
-      reason: remarks
+      reason: remarks,
+      member_type: user.member_type
     };
     this.emailService.documentDisApproval(emailPayload);
 
