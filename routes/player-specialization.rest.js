@@ -81,7 +81,7 @@ module.exports = (router) => {
      * 
      */
 
-    router.get("/master/player-specialization/ability/list", checkAuthToken, checkRole([ROLE.ADMIN]), function (req, res) {
+    router.get("/master/player-specialization/ability/list", checkAuthToken, function (req, res) {
         let serviceInst = new PlayerSpecializationService();
         return responseHandler(req, res, serviceInst.getAbilityList());
     });
@@ -221,7 +221,7 @@ module.exports = (router) => {
      * 
      */
 
-    router.get("/master/player-specialization/parameter/list/:ability_id", checkAuthToken, checkRole([ROLE.ADMIN]), function (req, res) {
+    router.get("/master/player-specialization/parameter/list/:ability_id", checkAuthToken, function (req, res) {
         let serviceInst = new PlayerSpecializationService();
         return responseHandler(req, res, serviceInst.getParameterList(req.params.ability_id));
     });
