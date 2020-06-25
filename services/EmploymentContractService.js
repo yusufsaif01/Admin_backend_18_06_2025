@@ -78,7 +78,7 @@ class EmploymentContractService {
       if (requestedData.role === ROLE.PLAYER || requestedData.role === ROLE.ADMIN) {
         matchCondition.status = { $ne: CONTRACT_STATUS.REJECTED }
       }
-      let data = await this.employmentContractUtilityInst.aggregate([{ $match: matchCondition },
+      let data = await this.employmentContractUtilityInst.aggregate([{ $match: matchCondition }, { $sort: { createdAt: -1 } },
       { "$lookup": { "from": "login_details", "localField": "sent_by", "foreignField": "user_id", "as": "login_detail" } },
       { $unwind: { path: "$login_detail" } }, { "$lookup": { "from": "club_academy_details", "localField": "clubAcademyName", "foreignField": "name", "as": "clubAcademyDetail" } },
       { $unwind: { path: "$clubAcademyDetail", preserveNullAndEmptyArrays: true } },
@@ -100,7 +100,7 @@ class EmploymentContractService {
       return Promise.reject(e);
     }
   }
-  
+
   /**
    * validates user_id
    *
