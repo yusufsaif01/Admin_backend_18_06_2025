@@ -14,6 +14,7 @@ const moment = require('moment');
 const PLAYER = require("../constants/PlayerType");
 const DOCUMENT_TYPE = require('../constants/DocumentType');
 const DOCUMENT_STATUS = require('../constants/DocumentStatus')
+const AdminUtility = require("../db/utilities/AdminUtility");
 
 class EmploymentContractService {
   constructor() {
@@ -21,6 +22,7 @@ class EmploymentContractService {
     this.playerUtilityInst = new PlayerUtility();
     this.emailService = new EmailService();
     this.employmentContractUtilityInst = new EmploymentContractUtility();
+    this.adminUtilityInst = new AdminUtility();
   }
 
   /**
@@ -116,18 +118,18 @@ class EmploymentContractService {
     return Promise.resolve();
   }
 
-    /**
-   * updates employment contract status
-   *
-   * @param {*} [requestedData={}]
-   * @returns
-   * @memberof EmploymentContractService
-   */
+  /**
+ * updates employment contract status
+ *
+ * @param {*} [requestedData={}]
+ * @returns
+ * @memberof EmploymentContractService
+ */
   async updateEmploymentContractStatus(requestedData = {}) {
     try {
       let { isSendToPlayer, data } = await this.isAllowedToUpdateStatus(requestedData);
       let sentByUser = await this.loginUtilityInst.findOne({ user_id: data.sent_by }, { username: 1, member_type: 1 });
-      let playerName = "", playerUserId = "", playerType = "", documents = [];
+      let playerName = "", playerUserId = "", playerType = "", documents = [], loggedInUser = requestedData.user;
       if (isSendToPlayer || sentByUser.member_type === MEMBER.PLAYER) {
         playerUserId = isSendToPlayer ? data.send_to : data.sent_by;
         let player = await this.playerUtilityInst.findOne({ user_id: playerUserId }, { first_name: 1, last_name: 1, player_type: 1, documents: 1 });
@@ -144,11 +146,13 @@ class EmploymentContractService {
         await this.convertToProfessional({ playerUserId: playerUserId, playerType: playerType });
         await this.updateProfileStatus({ playerUserId: playerUserId, documents: documents, status: reqObj.status });
         await this.emailService.employmentContractApproval({ email: sentByUser.username, name: playerName });
+        await this.sendEmailToAdmins({ loggedInUser: loggedInUser, status: CONTRACT_STATUS.APPROVED, reason: "", name: playerName })
       }
       if (reqObj.status === CONTRACT_STATUS.DISAPPROVED) {
         await this.employmentContractUtilityInst.updateOne({ id: requestedData.id }, { status: CONTRACT_STATUS.DISAPPROVED });
         await this.updateProfileStatus({ playerUserId: playerUserId, documents: documents, status: reqObj.status });
         await this.emailService.employmentContractDisapproval({ email: sentByUser.username, name: playerName, reason: reqObj.remarks });
+        await this.sendEmailToAdmins({ loggedInUser: loggedInUser, status: CONTRACT_STATUS.DISAPPROVED, name: playerName, reason: reqObj.remarks })
       }
       return Promise.resolve();
     } catch (e) {
@@ -291,6 +295,34 @@ class EmploymentContractService {
       return Promise.resolve();
     } catch (e) {
       console.log("Error in checkForActiveContracts() of EmploymentContractService", e);
+      return Promise.reject(e);
+    }
+  }
+
+  /**
+   * sends contract approval/disapproval mail to all admins
+   *
+   * @param {*} [requestedData={}]
+   * @returns
+   * @memberof EmploymentContractService
+   */
+  async sendEmailToAdmins(requestedData = {}) {
+    try {
+      const { name, reason, loggedInUser, status } = requestedData;
+      if (loggedInUser.role === ROLE.ADMIN) {
+        let admins = await this.adminUtilityInst.find({}, { email: 1 });
+        for (const admin of admins) {
+          if (status === CONTRACT_STATUS.APPROVED) {
+            await this.emailService.employmentContractApproval({ email: admin.email, name: name });
+          }
+          if (status === CONTRACT_STATUS.DISAPPROVED) {
+            await this.emailService.employmentContractDisapproval({ email: admin.email, name: name, reason: reason });
+          }
+        }
+      }
+      return Promise.resolve();
+    } catch (e) {
+      console.log("Error in sendEmailToAdmins() of EmploymentContractService", e);
       return Promise.reject(e);
     }
   }
