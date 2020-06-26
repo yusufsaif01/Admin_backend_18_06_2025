@@ -76,9 +76,15 @@ class EmploymentContractService {
       }
       let data = await this.employmentContractUtilityInst.aggregate([{ $match: matchCondition }, { $sort: { createdAt: -1 } },
       { "$lookup": { "from": "login_details", "localField": "sent_by", "foreignField": "user_id", "as": "login_detail" } },
-      { $unwind: { path: "$login_detail" } }, { "$lookup": { "from": "club_academy_details", "localField": "clubAcademyName", "foreignField": "name", "as": "clubAcademyDetail" } },
+      { $unwind: { path: "$login_detail" } }, { "$lookup": { "from": "club_academy_details", "localField": "clubAcademyEmail", "foreignField": "email", "as": "clubAcademyDetail" } },
       { $unwind: { path: "$clubAcademyDetail", preserveNullAndEmptyArrays: true } },
-      { $project: { _id: 0, id: 1, name: "$clubAcademyName", clubAcademyUserId: "$clubAcademyDetail.user_id", effectiveDate: 1, expiryDate: 1, status: 1, created_by: "$login_detail.member_type" } },
+      {
+        $project: {
+          _id: 0, id: 1, name: "$clubAcademyName", clubAcademyUserId: "$clubAcademyDetail.user_id",
+          effectiveDate: 1, expiryDate: 1, status: 1, created_by: "$login_detail.member_type",
+          canUpdateStatus: { $cond: { if: { $eq: [null, "$send_to"] }, then: true, else: false } }
+        }
+      },
       { $facet: { data: [{ $skip: options.skip }, { $limit: options.limit },], total_data: [{ $group: { _id: null, count: { $sum: 1 } } }] } }
       ]);
       let responseData = [], totalRecords = 0;
