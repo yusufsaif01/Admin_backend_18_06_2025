@@ -1,3 +1,3 @@
-docker rm -f yftchain-middleware
-docker build -t yftchain-middleware .
-docker run -d --name yftchain-middleware --env-file ../.env-docker -v /var/www/yftchain-middleware/logs/:/usr/src/app/logs/ -p 3001:3000 --net=host yftchain-middleware 
+docker rm -f yftchain-admin
+docker build -t yftchain-admin .
+docker run -d --name yftchain-admin --env-file ../.env-docker-admin -v /var/www/yftchain-admin/logs/:/usr/src/app/logs/ -p 3001:3000 --net=host yftchain-admin 

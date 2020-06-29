@@ -17,6 +17,7 @@ const ConnectionRequestUtility = require('../db/utilities/ConnectionRequestUtili
 const CONNECTION_REQUEST = require('../constants/ConnectionRequestStatus');
 const redisServiceInst = require('../redis/RedisService');
 const FootPlayerUtility = require('../db/utilities/FootPlayerUtility');
+const EmploymentContractUtility = require("../db/utilities/EmploymentContractUtility");
 
 class UserService extends BaseService {
 
@@ -29,6 +30,7 @@ class UserService extends BaseService {
         this.connectionRequestUtilityInst = new ConnectionRequestUtility();
         this.loginUtilityInst = new LoginUtility();
         this.footPlayerUtilityInst = new FootPlayerUtility();
+        this.employmentContractUtilityInst = new EmploymentContractUtility();
     }
 
     async getList(requestedData = {}) {
@@ -204,6 +206,7 @@ class UserService extends BaseService {
                 let date = Date.now()
                 await this.loginUtilityInst.findOneAndUpdate({ user_id: user_id }, { is_deleted: true, deleted_at: date })
                 await this.manageConnection(user_id);
+                await this.deleteEmploymentContracts(user_id);
                 if (loginDetails.member_type === MEMBER.PLAYER) {
                     await this.playerUtilityInst.findOneAndUpdate({ user_id: user_id }, { deleted_at: date })
                     await this.footPlayerUtilityInst.updateMany({ "send_to.user_id": user_id }, { is_deleted: true, deleted_at: date });
@@ -245,6 +248,26 @@ class UserService extends BaseService {
         }
         catch (e) {
             console.log("Error in manageConnection() of UserService", e);
+            return Promise.reject(e);
+        }
+    }
+
+    /**
+     * deletes employment contracts related to user
+     *
+     * @param {*} user_id
+     * @returns
+     * @memberof UserService
+     */
+    async deleteEmploymentContracts(user_id) {
+        try {
+            let condition = { is_deleted: false, $or: [{ sent_by: user_id }, { send_to: user_id }] };
+            let updatedDoc = { is_deleted: true, deleted_at: Date.now() };
+            await this.employmentContractUtilityInst.updateMany(condition, updatedDoc);
+            return Promise.resolve();
+        }
+        catch (e) {
+            console.log("Error in deleteEmploymentContracts() of UserService", e);
             return Promise.reject(e);
         }
     }

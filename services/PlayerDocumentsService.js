@@ -7,6 +7,10 @@ const LoginUtility = require("../db/utilities/LoginUtility");
 const EmailService = require("./EmailService");
 const AdminUtility = require("../db/utilities/AdminUtility");
 const MEMBER = require("../constants/MemberType");
+const { PLAYER } = require("../constants/MemberType");
+const PLAYER_TYPE = require("../constants/PlayerType");
+const EmploymentContractUtility = require("../db/utilities/EmploymentContractUtility");
+const CONTRACT_STATUS = require("../constants/ContractStatus");
 
 class PlayerDocumentsService {
   constructor() {
@@ -14,6 +18,7 @@ class PlayerDocumentsService {
     this.loginDetailsInst = new LoginUtility();
     this.emailService = new EmailService();
     this.adminInst = new AdminUtility();
+    this.employmentContractUtilityInst = new EmploymentContractUtility();
   }
 
   async getUserDocuments(user_id) {
@@ -66,18 +71,7 @@ class PlayerDocumentsService {
       this.documentApprovalNotification(user);
 
       // profile approval
-      await this.loginDetailsInst.updateOne(
-        {
-          user_id: user.user_id,
-        },
-        {
-          $set: {
-            profile_status: {
-              status: ProfileStatus.VERIFIED,
-            },
-          },
-        }
-      );
+      await this.updateProfileStatus(user)
 
       // send profile approved notification
       // await this.emailService.profileVerified(user.email);
@@ -178,6 +172,25 @@ class PlayerDocumentsService {
       emailPayload.email = admin.email;
       this.emailService.documentDisApproval(emailPayload);
     });
+  }
+
+  async updateProfileStatus(user) {
+    let profile_status = ProfileStatus.NON_VERIFIED;
+    if (user.player_type === PLAYER_TYPE.PROFESSIONAL) {
+      let condition = {
+        is_deleted: false,
+        $and: [{ $or: [{ sent_by: user.user_id }, { send_to: user.user_id }] },
+        { $or: [{ status: CONTRACT_STATUS.ACTIVE }, { status: CONTRACT_STATUS.YET_TO_START }, { status: CONTRACT_STATUS.COMPLETED }] }]
+      };
+      let foundContract = await this.employmentContractUtilityInst.findOne(condition);
+      if (foundContract) {
+        profile_status = ProfileStatus.VERIFIED;
+      }
+    }
+    else {
+      profile_status = ProfileStatus.VERIFIED;
+    }
+    await this.loginDetailsInst.updateOne({ user_id: user.user_id, }, { "profile_status.status": profile_status });
   }
 }
 

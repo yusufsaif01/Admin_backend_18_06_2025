@@ -1,7 +1,7 @@
 FROM node:alpine
 MAINTAINER Pushpam
 
-LABEL description="YFTChain Middleware Docker file"
+LABEL description="YFTChain Admin Docker file"
 
 # Create app directory
 WORKDIR /usr/src/app/
