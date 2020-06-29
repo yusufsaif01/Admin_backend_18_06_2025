@@ -33,7 +33,8 @@ module.exports = (router) => {
    *                         "status": "active",
    *                         "name": "newclub",
    *                         "clubAcademyUserId": "7b2aae40-b92d-41c9-a1b5-84c0b20d9996",
-   *                         "created_by": "player"
+   *                         "created_by": "player",
+   *                         "canUpdateStatus": true
    *                                }]
    *                  }
    *      }
