@@ -86,7 +86,7 @@ class EmploymentContractService {
       { $unwind: { path: "$clubAcademyDetail", preserveNullAndEmptyArrays: true } },
       {
         $project: {
-          _id: 0, id: 1, name: "$clubAcademyName", clubAcademyUserId: "$clubAcademyDetail.user_id",
+          _id: 0, id: 1, playerName: "$playerName", name: "$clubAcademyName", clubAcademyUserId: "$clubAcademyDetail.user_id",
           effectiveDate: 1, expiryDate: 1, status: 1, created_by: "$login_detail.member_type",
           canUpdateStatus: { $cond: { if: { $eq: [null, "$send_to"] }, then: true, else: false } }
         }
