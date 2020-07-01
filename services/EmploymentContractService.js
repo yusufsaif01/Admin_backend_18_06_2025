@@ -86,7 +86,7 @@ class EmploymentContractService {
       { $unwind: { path: "$clubAcademyDetail", preserveNullAndEmptyArrays: true } },
       {
         $project: {
-          _id: 0, id: 1, name: "$clubAcademyName", clubAcademyUserId: "$clubAcademyDetail.user_id",
+          _id: 0, id: 1, playerName: "$playerName", name: "$clubAcademyName", clubAcademyUserId: "$clubAcademyDetail.user_id",
           effectiveDate: 1, expiryDate: 1, status: 1, created_by: "$login_detail.member_type",
           canUpdateStatus: { $cond: { if: { $eq: [null, "$send_to"] }, then: true, else: false } }
         }
@@ -150,13 +150,13 @@ class EmploymentContractService {
         await this.employmentContractUtilityInst.updateOne({ id: requestedData.id }, { status: status });
         await this.rejectOtherContracts({ id: requestedData.id, playerUserId: playerUserId });
         await this.convertToProfessional({ playerUserId: playerUserId, playerType: playerType });
-        await this.updateProfileStatus({ playerUserId: playerUserId, documents: documents, status: reqObj.status });
+        await this.updateProfileStatus({ id: requestedData.id, playerUserId: playerUserId, documents: documents, status: reqObj.status });
         await this.emailService.employmentContractApproval({ email: sentByUser.username, name: playerName });
         await this.sendEmailToAdmins({ loggedInUser: loggedInUser, status: CONTRACT_STATUS.APPROVED, reason: "", name: playerName })
       }
       if (reqObj.status === CONTRACT_STATUS.DISAPPROVED) {
         await this.employmentContractUtilityInst.updateOne({ id: requestedData.id }, { status: CONTRACT_STATUS.DISAPPROVED });
-        await this.updateProfileStatus({ playerUserId: playerUserId, documents: documents, status: reqObj.status });
+        await this.updateProfileStatus({ id: requestedData.id, playerUserId: playerUserId, documents: documents, status: reqObj.status });
         await this.emailService.employmentContractDisapproval({ email: sentByUser.username, name: playerName, reason: reqObj.remarks });
         await this.sendEmailToAdmins({ loggedInUser: loggedInUser, status: CONTRACT_STATUS.DISAPPROVED, name: playerName, reason: reqObj.remarks })
       }
@@ -269,7 +269,12 @@ class EmploymentContractService {
     try {
       let profileStatus = PROFILE_STATUS.NON_VERIFIED;
       if (requestedData.status === CONTRACT_STATUS.DISAPPROVED) {
-        profileStatus = PROFILE_STATUS.NON_VERIFIED;
+        let condition = {
+          id: { $ne: requestedData.id }, is_deleted: false, status: { $in: [CONTRACT_STATUS.ACTIVE, CONTRACT_STATUS.COMPLETED, CONTRACT_STATUS.YET_TO_START] },
+          $or: [{ sent_by: requestedData.playerUserId }, { send_to: requestedData.playerUserId }]
+        };
+        let playerContract = await this.employmentContractUtilityInst.findOne(condition);
+        profileStatus = playerContract ? PROFILE_STATUS.VERIFIED : PROFILE_STATUS.NON_VERIFIED;
       }
       if (requestedData.status === CONTRACT_STATUS.APPROVED) {
         let aadhaar = _.find(requestedData.documents, { type: DOCUMENT_TYPE.AADHAR });
