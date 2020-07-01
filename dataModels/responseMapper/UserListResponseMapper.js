@@ -43,7 +43,8 @@ class UserListResponseMapper {
                     "status": "",
                     "account_status": "-",
                     "is_email_verified": "false",
-                    "user_id": user.user_id
+                    "user_id": user.user_id,
+                    "no_of_footplayers": user.no_of_footplayers
                 };
 
                 if (user.login_details && user.login_details.profile_status && user.login_details.profile_status.status) {

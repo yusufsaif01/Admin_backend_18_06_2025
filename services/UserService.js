@@ -18,6 +18,7 @@ const CONNECTION_REQUEST = require('../constants/ConnectionRequestStatus');
 const redisServiceInst = require('../redis/RedisService');
 const FootPlayerUtility = require('../db/utilities/FootPlayerUtility');
 const EmploymentContractUtility = require("../db/utilities/EmploymentContractUtility");
+const FootPlayerStatus = require("../constants/FootPlayerStatus");
 
 class UserService extends BaseService {
 
@@ -47,9 +48,9 @@ class UserService extends BaseService {
             let options = { limit: paginationOptions.limit, skip: skipCount, sort: {} };
 
             if (!_.isEmpty(sortOptions.sort_by) && !_.isEmpty(sortOptions.sort_order))
-                options.sort[sortOptions.sort_by] = sortOptions.sort_order;
+                options.sort[sortOptions.sort_by] = Number(sortOptions.sort_order);
 
-            if (requestedData.filterConditions && (requestedData.filterConditions.email_verified || requestedData.filterConditions.profile_status)) {
+            if (member_type === MEMBER.PLAYER && requestedData.filterConditions && (requestedData.filterConditions.email_verified || requestedData.filterConditions.profile_status)) {
                 let _condition = {}
                 if (requestedData.filterConditions.email_verified)
                     _condition.is_email_verified = (String(requestedData.filterConditions.email_verified).toLowerCase() === EMAIL_VERIFIED.TRUE);
@@ -62,11 +63,9 @@ class UserService extends BaseService {
                 conditions.user_id = { $in: users };
             }
 
-            if (requestedData.filter && requestedData.filter.search) {
-                let _condition = {}
-                _condition.status = new RegExp(requestedData.filter.search, 'i');
-
-                let users = await this.loginUtilityInst.find(_condition, { user_id: 1 });
+            if (member_type === MEMBER.PLAYER && requestedData.filter && requestedData.filter.search) {
+                let regex = new RegExp(requestedData.filter.search, 'i');
+                let users = await this.loginUtilityInst.find({ "profile_status.status": regex }, { user_id: 1 });
                 users = _.map(users, "user_id");
                 if (conditions.$or)
                     conditions.$or.push({ user_id: { $in: users } });
@@ -130,27 +129,52 @@ class UserService extends BaseService {
 
     async getClubAcademyList(conditions, options, member_type) {
         try {
-            conditions.member_type = member_type
-            const totalRecords = await this.clubAcademyUtilityInst.countList(conditions);
-
             let baseOptions = {
                 conditions: conditions,
-                options: options,
-                projection: { name: 1, email: 1, user_id: 1 }
+                options: options
             };
+            let data = await this.loginUtilityInst.aggregate([{ $match: { deleted_at: { $exists: false }, member_type: member_type } },
+            { "$lookup": { "from": "club_academy_details", "localField": "user_id", "foreignField": "user_id", "as": "clubAcademy" } },
+            { $unwind: { path: "$clubAcademy" } },
+            { "$lookup": { "from": "foot_players", "localField": "user_id", "foreignField": "sent_by", "as": "footplayers" } },
+            {
+                $project: {
+                    name: "$clubAcademy.name", email: "$clubAcademy.email", user_id: "$clubAcademy.user_id",
+                    login_details: { status: "$status", is_email_verified: "$is_email_verified", profile_status: "$profile_status" },
+                    no_of_footplayers: {
+                        $size: {
+                            $filter: {
+                                input: "$footplayers", as: "element", cond: {
+                                    $and: [{ $eq: ["$$element.status", FootPlayerStatus.ADDED] },
+                                    { $eq: ["$$element.is_deleted", false] }]
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            { $match: baseOptions.conditions }, { $sort: baseOptions.options.sort },
+            {
+                $facet: {
+                    data: [{ $skip: baseOptions.options.skip }, { $limit: baseOptions.options.limit }],
+                    total_data: [{ $group: { _id: null, count: { $sum: 1 } } }],
+                },
+            }]);
 
-            let toBePopulatedOptions = {
-                path: "login_details",
-                projection: { status: 1, is_email_verified: 1, profile_status: 1 }
-            };
-
-            let data = await this.clubAcademyUtilityInst.populate(baseOptions, toBePopulatedOptions);
-
-            data = new UserListResponseMapper().map(data, member_type);
-            let response = {
-                total: totalRecords,
-                records: data
+            let responseData = [],
+                totalRecords = 0;
+            if (data && data.length && data[0] && data[0].data) {
+                responseData = new UserListResponseMapper().map(data[0].data, member_type);
+                if (
+                    data[0].data.length &&
+                    data[0].total_data &&
+                    data[0].total_data.length &&
+                    data[0].total_data[0].count
+                ) {
+                    totalRecords = data[0].total_data[0].count;
+                }
             }
+            let response = { total: totalRecords, records: responseData };
             return response;
         } catch (e) {
             console.log("Error in getClubAcademyList() of UserService", e);
@@ -327,6 +351,15 @@ class UserService extends BaseService {
                         name: new RegExp(filterConditions.name, 'i')
                     });
                 }
+                if (filterConditions.email_verified === 'true') {
+                    filterArr.push({ "login_details.is_email_verified": true })
+                }
+                if (filterConditions.email_verified === 'false') {
+                    filterArr.push({ "login_details.is_email_verified": false })
+                }
+                if (filterConditions.profile_status) {
+                    filterArr.push({ "login_details.profile_status.status": filterConditions.profile_status })
+                }
             }
             condition = {
                 $and: filterArr
@@ -367,7 +400,14 @@ class UserService extends BaseService {
                 })
             }
             else {
+                filterArr.push({ "login_details.profile_status.status": new RegExp(filters.search, 'i') })
                 filterArr.push({ name: new RegExp(filters.search, 'i') })
+                let num = Number(filters.search)
+                if (!isNaN(num)) {
+                    if (num === 0)
+                        filterArr.push({ no_of_footplayers: null })
+                    filterArr.push({ no_of_footplayers: num })
+                }
             }
             filterArr.push({
                 email: new RegExp(filters.search, "i")

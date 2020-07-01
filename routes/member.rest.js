@@ -108,7 +108,7 @@ module.exports = (router) => {
 	 * @apiParam (query) {String} page_size records per page
      * @apiParam (query) {String} sort_by sort by field name
      * @apiParam (query) {String} sort_order order to sort (-1 - Descending, 1 - Ascending)
-     * @apiParam (query) {String} search text search, this search will be done on name, email, status
+     * @apiParam (query) {String} search text search, this search will be done on name, email, status, no_of_footplayers
      * @apiParam (query) {String} from from date of player register
      * @apiParam (query) {String} to to date of player register
      * @apiParam (query) {String} email email of the player
@@ -134,7 +134,8 @@ module.exports = (router) => {
      *             "status":"verified/unverified",
      *             "account_status":"active/inactive/blocked/pending",
      *             "is_email_verified": "true",
-     *             "user_id": "f9cdd4d4-fe2d-4166-9685-6638fa80e526"
+     *             "user_id": "f9cdd4d4-fe2d-4166-9685-6638fa80e526",
+     *             "no_of_footplayers": 3
      *            }
      *         ]
      *       }
@@ -159,8 +160,8 @@ module.exports = (router) => {
             limit: (req.query && req.query.page_size) ? Number(req.query.page_size) : 10
         };
         sortOptions = {
-            sort_by: (req.query && req.query.sort_by) ? req.query.sort_by : "",
-            sort_order: (req.query && req.query.sort_order) ? req.query.sort_order : 1
+            sort_by: (req.query && req.query.sort_by) ? req.query.sort_by : "createdAt",
+            sort_order: (req.query && req.query.sort_order) ? (req.query.sort_order) : "1"
         };
         filter = {
             search: (req.query && req.query.search) ? req.query.search : null
@@ -190,7 +191,7 @@ module.exports = (router) => {
 	 * @apiParam (query) {String} page_size records per page
      * @apiParam (query) {String} sort_by sort by field name
      * @apiParam (query) {String} sort_order order to sort (-1 - Descending, 1 - Ascending)
-     * @apiParam (query) {String} search text search, this search will be done on name, email, status
+     * @apiParam (query) {String} search text search, this search will be done on name, email, status, no_of_footplayers
      * @apiParam (query) {String} from from date of player register
      * @apiParam (query) {String} to to date of player register
      * @apiParam (query) {String} email email of the player
@@ -215,7 +216,8 @@ module.exports = (router) => {
      *             "status":"verified/unverified",
      *             "account_status":"active/inactive/blocked/pending",
      *             "is_email_verified": "true",
-     *             "user_id": "f9cdd4d4-fe2d-4166-9685-6638fa80e526"
+     *             "user_id": "f9cdd4d4-fe2d-4166-9685-6638fa80e526",
+     *             "no_of_footplayers": 3
      *            }
      *         ]
      *       }
@@ -240,8 +242,8 @@ module.exports = (router) => {
             limit: (req.query && req.query.page_size) ? Number(req.query.page_size) : 10
         };
         sortOptions = {
-            sort_by: (req.query && req.query.sort_by) ? req.query.sort_by : "",
-            sort_order: (req.query && req.query.sort_order) ? req.query.sort_order : 1
+            sort_by: (req.query && req.query.sort_by) ? req.query.sort_by : "createdAt",
+            sort_order: (req.query && req.query.sort_order) ? req.query.sort_order : "1"
         };
         filter = {
             search: (req.query && req.query.search) ? req.query.search : null
