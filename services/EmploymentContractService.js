@@ -57,7 +57,7 @@ class EmploymentContractService {
       return Promise.reject(new errors.NotFound(RESPONSE_MESSAGE.EMPLOYMENT_CONTRACT_NOT_FOUND));
     }
     let user = requestedData.user;
-    if (user.role !== ROLE.ADMIN && user.email !== data.playerEmail && user.email !== data.clubAcademyEmail) {
+    if (user.role !== ROLE.ADMIN && user.user_id !== data.sent_by && user.user_id !== data.send_to) {
       return Promise.reject(new errors.ValidationFailed(RESPONSE_MESSAGE.EMPLOYMENT_CONTRACT_ACCESS_DENIED));
     }
     return Promise.resolve(data);
