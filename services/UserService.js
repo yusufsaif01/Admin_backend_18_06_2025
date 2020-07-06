@@ -51,13 +51,13 @@ class UserService extends BaseService {
                 options.sort[sortOptions.sort_by] = Number(sortOptions.sort_order);
 
             if (member_type === MEMBER.PLAYER && requestedData.filterConditions && (requestedData.filterConditions.email_verified || requestedData.filterConditions.profile_status)) {
-                let _condition = {}
+                let _condition = {}, filterArr = [];
                 if (requestedData.filterConditions.email_verified)
-                    _condition.is_email_verified = (String(requestedData.filterConditions.email_verified).toLowerCase() === EMAIL_VERIFIED.TRUE);
+                    filterArr.push({ is_email_verified: (String(requestedData.filterConditions.email_verified).toLowerCase() === EMAIL_VERIFIED.TRUE) })
                 if (requestedData.filterConditions.profile_status)
-                    _condition.profile_status = { status: requestedData.filterConditions.profile_status };
+                    filterArr.push({ "profile_status.status": requestedData.filterConditions.profile_status })
 
-
+                _condition.$and = filterArr;
                 let users = await this.loginUtilityInst.find(_condition, { user_id: 1 });
                 users = _.map(users, "user_id");
                 conditions.user_id = { $in: users };
