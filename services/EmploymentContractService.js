@@ -15,6 +15,8 @@ const PLAYER = require("../constants/PlayerType");
 const DOCUMENT_TYPE = require('../constants/DocumentType');
 const DOCUMENT_STATUS = require('../constants/DocumentStatus')
 const AdminUtility = require("../db/utilities/AdminUtility");
+const EmploymentContractListResponseMapper = require("../dataModels/responseMapper/EmploymentContractListResponseMapper");
+const EmploymentContractViewResponseMapper = require("../dataModels/responseMapper/EmploymentContractViewResponseMapper");
 
 class EmploymentContractService {
   constructor() {
@@ -45,7 +47,7 @@ class EmploymentContractService {
       );
       data.created_by = sentByUser ? sentByUser.member_type : "";
       data.send_to_category = sendToUser ? sendToUser.member_type : "";
-      return data;
+      return new EmploymentContractViewResponseMapper().map(data);
     } catch (e) {
       console.log("Error in getEmploymentContractDetails() of EmploymentContractService", e);
       return Promise.reject(e);
@@ -108,6 +110,9 @@ class EmploymentContractService {
           totalRecords = data[0].total_data[0].count;
         }
       }
+
+      responseData = (new EmploymentContractListResponseMapper).map(responseData);
+
       let response = { total: totalRecords, records: responseData };
       return response;
 
