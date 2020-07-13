@@ -1,12 +1,18 @@
 const Promise = require("bluebird");
 const mailer = require('../mailer');
 const mailTemplates = require('../mailTemplates');
+const render = require("../mailTemplates/render");
 
 class EmailService {
     
     async sendMail(mailTemplate, data) {
         try {
             let { to, subject, html, text } = mailTemplates[mailTemplate](data);
+
+            if (html) {
+              html = render(html, data);
+            }
+            
             let details = await mailer.send({ to, subject, html, text });
             return details;
         } catch (err) {
