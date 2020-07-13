@@ -15,8 +15,6 @@ const PLAYER = require("../constants/PlayerType");
 const DOCUMENT_TYPE = require('../constants/DocumentType');
 const DOCUMENT_STATUS = require('../constants/DocumentStatus')
 const AdminUtility = require("../db/utilities/AdminUtility");
-const EmploymentContractListResponseMapper = require("../dataModels/responseMapper/EmploymentContractListResponseMapper");
-const EmploymentContractViewResponseMapper = require("../dataModels/responseMapper/EmploymentContractViewResponseMapper");
 
 class EmploymentContractService {
   constructor() {
@@ -47,7 +45,7 @@ class EmploymentContractService {
       );
       data.created_by = sentByUser ? sentByUser.member_type : "";
       data.send_to_category = sendToUser ? sendToUser.member_type : "";
-      return new EmploymentContractViewResponseMapper().map(data);
+      return data;
     } catch (e) {
       console.log("Error in getEmploymentContractDetails() of EmploymentContractService", e);
       return Promise.reject(e);
@@ -96,9 +94,9 @@ class EmploymentContractService {
       { $unwind: { path: "$clubAcademyDetail", preserveNullAndEmptyArrays: true } },
       {
         $project: {
-          _id: 0, id: 1, player_name: "$player_name", name: "$club_academy_name", clubAcademyUserId: "$clubAcademyDetail.user_id",
+          _id: 0, id: 1, player_name: "$player_name", name: "$club_academy_name", club_academy_user_id: "$clubAcademyDetail.user_id",
           effective_date: 1, expiry_date: 1, status: 1, created_by: "$login_detail.member_type",
-          canUpdateStatus: { $cond: { if: { $eq: [null, "$send_to"] }, then: true, else: false } }
+          can_update_status: { $cond: { if: { $eq: [null, "$send_to"] }, then: true, else: false } }
         }
       },
       { $facet: { data: [{ $skip: options.skip }, { $limit: options.limit },], total_data: [{ $group: { _id: null, count: { $sum: 1 } } }] } }
@@ -111,7 +109,7 @@ class EmploymentContractService {
         }
       }
 
-      responseData = (new EmploymentContractListResponseMapper).map(responseData);
+      // responseData = (new EmploymentContractListResponseMapper).map(responseData);
 
       let response = { total: totalRecords, records: responseData };
       return response;
