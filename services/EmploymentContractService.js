@@ -109,8 +109,6 @@ class EmploymentContractService {
         }
       }
 
-      // responseData = (new EmploymentContractListResponseMapper).map(responseData);
-
       let response = { total: totalRecords, records: responseData };
       return response;
 
