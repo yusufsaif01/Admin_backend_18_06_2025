@@ -97,7 +97,7 @@ class ClubAcademyDocumentService {
     let admins = await this.getAdmins();
     admins.map((admin) => {
       emailPayload.email = admin.email;
-      this.emailService.documentApproval(emailPayload);
+      this.emailService.documentApprovalAdmin(emailPayload);
     });
   }
 

@@ -32,6 +32,10 @@ class EmailService {
         await this.sendMail("documentApproval", data)
     }
 
+    async documentApprovalAdmin (data) {
+        await this.sendMail("documentApprovalAdmin", data)
+    }
+
     async documentDisApproval (data) {
         await this.sendMail("documentDisapproval", data);
     }
