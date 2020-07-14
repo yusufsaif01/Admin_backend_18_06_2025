@@ -1,5 +1,5 @@
 module.exports = (data) => {
-    return `
+  return `
 <!DOCTYPE html>
 <html>
   <head>
@@ -41,7 +41,7 @@ module.exports = (data) => {
         </tr>
         <tr style="display: block; width: 100%;">
           <th style="text-align: center; display: block; width: 100%;">
-            <img src="${data.appUrl}assets/images/yftchain.png" alt="logo" width="250px" />
+            <img src="${data.appUrl}assets/images/website/logo.png" alt="logo" width="250px" />
           </th>
         </tr>
         <tr style="height: 10px;">
@@ -49,4 +49,4 @@ module.exports = (data) => {
         </tr>
       </thead>
     `;
-}
+};
