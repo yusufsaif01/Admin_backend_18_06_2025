@@ -39,6 +39,9 @@ class EmailService {
     async documentDisApproval (data) {
         await this.sendMail("documentDisapproval", data);
     }
+    async documentDisApprovalAdmin (data) {
+        await this.sendMail("documentDisapprovalTemplateAdmin", data);
+    }
 
     async employmentContractApproval (data) {
         await this.sendMail("employmentContractApproval", data)

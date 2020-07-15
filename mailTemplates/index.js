@@ -5,6 +5,7 @@ const documentApprovalAdmin = require("./documentApprovalTemplateAdmin");
 const documentDisapproval = require("./documentDisApprovalTemplate");
 const employmentContractApproval = require("./EmploymentContractApprovalTemplate");
 const employmentContractDisapproval = require("./EmploymentContractDisapprovalTemplate");
+const documentDisapprovalTemplateAdmin = require("./documentDisapprovalTemplateAdmin");
 
 module.exports = {
   profileVerified,
@@ -12,6 +13,7 @@ module.exports = {
   documentApproval,
   documentApprovalAdmin,
   documentDisapproval,
+  documentDisapprovalTemplateAdmin,
   employmentContractApproval,
-  employmentContractDisapproval
+  employmentContractDisapproval,
 };
