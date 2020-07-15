@@ -90,13 +90,13 @@ class EmploymentContractService {
       }
       let data = await this.employmentContractUtilityInst.aggregate([{ $match: matchCondition }, { $sort: { createdAt: -1 } },
       { "$lookup": { "from": "login_details", "localField": "sent_by", "foreignField": "user_id", "as": "login_detail" } },
-      { $unwind: { path: "$login_detail" } }, { "$lookup": { "from": "club_academy_details", "localField": "clubAcademyEmail", "foreignField": "email", "as": "clubAcademyDetail" } },
+      { $unwind: { path: "$login_detail" } }, { "$lookup": { "from": "club_academy_details", "localField": "club_academy_email", "foreignField": "email", "as": "clubAcademyDetail" } },
       { $unwind: { path: "$clubAcademyDetail", preserveNullAndEmptyArrays: true } },
       {
         $project: {
-          _id: 0, id: 1, playerName: "$playerName", name: "$clubAcademyName", clubAcademyUserId: "$clubAcademyDetail.user_id",
-          effectiveDate: 1, expiryDate: 1, status: 1, created_by: "$login_detail.member_type",
-          canUpdateStatus: { $cond: { if: { $eq: [null, "$send_to"] }, then: true, else: false } }
+          _id: 0, id: 1, player_name: "$player_name", name: "$club_academy_name", club_academy_user_id: "$clubAcademyDetail.user_id",
+          effective_date: 1, expiry_date: 1, status: 1, created_by: "$login_detail.member_type",
+          can_update_status: { $cond: { if: { $eq: [null, "$send_to"] }, then: true, else: false } }
         }
       },
       { $facet: { data: [{ $skip: options.skip }, { $limit: options.limit },], total_data: [{ $group: { _id: null, count: { $sum: 1 } } }] } }
@@ -108,6 +108,7 @@ class EmploymentContractService {
           totalRecords = data[0].total_data[0].count;
         }
       }
+
       let response = { total: totalRecords, records: responseData };
       return response;
 
@@ -143,11 +144,11 @@ class EmploymentContractService {
     try {
       let { isSendToPlayer, data } = await this.isAllowedToUpdateStatus(requestedData);
       let sentByUser = await this.loginUtilityInst.findOne({ user_id: data.sent_by }, { username: 1, member_type: 1 });
-      let playerName = "", playerUserId = "", playerType = "", documents = [], loggedInUser = requestedData.user;
+      let player_name = "", playerUserId = "", playerType = "", documents = [], loggedInUser = requestedData.user;
       if (isSendToPlayer || sentByUser.member_type === MEMBER.PLAYER) {
         playerUserId = isSendToPlayer ? data.send_to : data.sent_by;
         let player = await this.playerUtilityInst.findOne({ user_id: playerUserId }, { first_name: 1, last_name: 1, player_type: 1, documents: 1 });
-        playerName = `${player.first_name} ${player.last_name}`;
+        player_name = `${player.first_name} ${player.last_name}`;
         playerType = player.player_type;
         documents = player.documents;
       }
@@ -159,14 +160,14 @@ class EmploymentContractService {
         await this.rejectOtherContracts({ id: requestedData.id, playerUserId: playerUserId });
         await this.convertToProfessional({ playerUserId: playerUserId, playerType: playerType });
         await this.updateProfileStatus({ id: requestedData.id, playerUserId: playerUserId, documents: documents, status: reqObj.status });
-        await this.emailService.employmentContractApproval({ email: sentByUser.username, name: playerName });
-        await this.sendEmailToAdmins({ loggedInUser: loggedInUser, status: CONTRACT_STATUS.APPROVED, reason: "", name: playerName })
+        await this.emailService.employmentContractApproval({ email: sentByUser.username, name: player_name });
+        await this.sendEmailToAdmins({ loggedInUser: loggedInUser, status: CONTRACT_STATUS.APPROVED, reason: "", name: player_name })
       }
       if (reqObj.status === CONTRACT_STATUS.DISAPPROVED) {
         await this.employmentContractUtilityInst.updateOne({ id: requestedData.id }, { status: CONTRACT_STATUS.DISAPPROVED });
         await this.updateProfileStatus({ id: requestedData.id, playerUserId: playerUserId, documents: documents, status: reqObj.status });
-        await this.emailService.employmentContractDisapproval({ email: sentByUser.username, name: playerName, reason: reqObj.remarks });
-        await this.sendEmailToAdmins({ loggedInUser: loggedInUser, status: CONTRACT_STATUS.DISAPPROVED, name: playerName, reason: reqObj.remarks })
+        await this.emailService.employmentContractDisapproval({ email: sentByUser.username, name: player_name, reason: reqObj.remarks });
+        await this.sendEmailToAdmins({ loggedInUser: loggedInUser, status: CONTRACT_STATUS.DISAPPROVED, name: player_name, reason: reqObj.remarks })
       }
       return Promise.resolve();
     } catch (e) {
@@ -216,15 +217,15 @@ class EmploymentContractService {
   getEmploymentContractStatus(data) {
     let date = new Date();
     let dateNow = moment(date).format("YYYY-MM-DD");
-    let effectiveDate = moment(data.effectiveDate).format("YYYY-MM-DD");
-    let expiryDate = moment(data.expiryDate).format("YYYY-MM-DD");
-    if (dateNow < effectiveDate) {
+    let effective_date = moment(data.effective_date).format("YYYY-MM-DD");
+    let expiry_date = moment(data.expiry_date).format("YYYY-MM-DD");
+    if (dateNow < effective_date) {
       return CONTRACT_STATUS.YET_TO_START;
     }
-    if (expiryDate > dateNow) {
+    if (expiry_date > dateNow) {
       return CONTRACT_STATUS.ACTIVE;
     }
-    if (expiryDate <= dateNow) {
+    if (expiry_date <= dateNow) {
       return CONTRACT_STATUS.COMPLETED;
     }
   }
