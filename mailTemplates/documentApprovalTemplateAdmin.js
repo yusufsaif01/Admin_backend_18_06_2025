@@ -1,19 +1,13 @@
-const MEMBER = require('../constants/MemberType')
+const MEMBER = require("../constants/MemberType");
 
-module.exports = ({ email, name, member_type }) => {
-  let email_text = "";
-  if (member_type === MEMBER.PLAYER) {
-    email_text = `Aadhaar details for ${name} ${member_type} has been approved successfully by YFTChain.`
-  }
-  if (member_type === MEMBER.ACADEMY) {
-    email_text = `Document details for ${name} ${member_type} has been approved successfully by YFTChain.`
-  }
-  if (member_type === MEMBER.CLUB) {
-    email_text = `AIFF document details for ${name} ${member_type} has been approved successfully by YFTChain.`
-  }
-  return {
-    to: email,
-    subject: "Document Approved",
-    text: email_text
+module.exports = ({ email, name, member_type, from_email }) => {
+  let mappings = {
+    [MEMBER.PLAYER]: require("./member-documents/approval/player"),
+    [MEMBER.ACADEMY]: require("./member-documents/approval/academy"),
+    [MEMBER.CLUB]: require("./member-documents/approval/club"),
   };
+
+  if (mappings[member_type]) {
+    return mappings[member_type]({ email, name, member_type, from_email });
+  }
 };
