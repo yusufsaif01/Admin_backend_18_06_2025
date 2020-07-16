@@ -144,12 +144,13 @@ class EmploymentContractService {
     try {
       let { isSendToPlayer, data } = await this.isAllowedToUpdateStatus(requestedData);
       let sentByUser = await this.loginUtilityInst.findOne({ user_id: data.sent_by }, { username: 1, member_type: 1 });
-      let player_name = "", playerUserId = "", playerType = "", documents = [], loggedInUser = requestedData.user;
+      let player_name = "", playerEmail = "", playerUserId = "", playerType = "", documents = [], loggedInUser = requestedData.user;
       if (isSendToPlayer || sentByUser.member_type === MEMBER.PLAYER) {
         playerUserId = isSendToPlayer ? data.send_to : data.sent_by;
-        let player = await this.playerUtilityInst.findOne({ user_id: playerUserId }, { first_name: 1, last_name: 1, player_type: 1, documents: 1 });
+        let player = await this.playerUtilityInst.findOne({ user_id: playerUserId }, { first_name: 1, last_name: 1, player_type: 1, documents: 1, email:1 });
         player_name = `${player.first_name} ${player.last_name}`;
         playerType = player.player_type;
+        playerEmail = player.email;
         documents = player.documents;
       }
       let reqObj = requestedData.reqObj;
@@ -161,13 +162,25 @@ class EmploymentContractService {
         await this.convertToProfessional({ playerUserId: playerUserId, playerType: playerType });
         await this.updateProfileStatus({ id: requestedData.id, playerUserId: playerUserId, documents: documents, status: reqObj.status });
         await this.emailService.employmentContractApproval({ email: sentByUser.username, name: player_name });
-        await this.sendEmailToAdmins({ loggedInUser: loggedInUser, status: CONTRACT_STATUS.APPROVED, reason: "", name: player_name })
+        await this.sendEmailToAdmins({
+          loggedInUser: loggedInUser,
+          status: CONTRACT_STATUS.APPROVED,
+          reason: "",
+          name: player_name,
+          email: playerEmail,
+        });
       }
       if (reqObj.status === CONTRACT_STATUS.DISAPPROVED) {
         await this.employmentContractUtilityInst.updateOne({ id: requestedData.id }, { status: CONTRACT_STATUS.DISAPPROVED });
         await this.updateProfileStatus({ id: requestedData.id, playerUserId: playerUserId, documents: documents, status: reqObj.status });
         await this.emailService.employmentContractDisapproval({ email: sentByUser.username, name: player_name, reason: reqObj.remarks });
-        await this.sendEmailToAdmins({ loggedInUser: loggedInUser, status: CONTRACT_STATUS.DISAPPROVED, name: player_name, reason: reqObj.remarks })
+        await this.sendEmailToAdmins({
+          loggedInUser: loggedInUser,
+          status: CONTRACT_STATUS.DISAPPROVED,
+          name: player_name,
+          email: playerEmail,
+          reason: reqObj.remarks,
+        });
       }
       return Promise.resolve();
     } catch (e) {
@@ -328,15 +341,37 @@ class EmploymentContractService {
    */
   async sendEmailToAdmins(requestedData = {}) {
     try {
-      const { name, reason, loggedInUser, status } = requestedData;
+      const { name, reason, loggedInUser, status, email } = requestedData;
+      let approverAdmin = await this.adminUtilityInst.findOne({email: loggedInUser.email}, { email: 1, name:1 });
       if (loggedInUser.role === ROLE.ADMIN) {
-        let admins = await this.adminUtilityInst.find({}, { email: 1 });
+        let admins = await this.adminUtilityInst.find({}, { email: 1, name });
         for (const admin of admins) {
           if (status === CONTRACT_STATUS.APPROVED) {
-            await this.emailService.employmentContractApproval({ email: admin.email, name: name });
+            await this.emailService.employmentContractApprovalAdmin({
+              email: admin.email,
+              admin: {
+                name: approverAdmin.name,
+                email: approverAdmin.email,
+              },
+              player: {
+                name: name,
+                email: email,
+              }
+            });
           }
           if (status === CONTRACT_STATUS.DISAPPROVED) {
-            await this.emailService.employmentContractDisapproval({ email: admin.email, name: name, reason: reason });
+            await this.emailService.employmentContractDisapprovalAdmin({
+              email: admin.email,
+              admin: {
+                name: approverAdmin.name,
+                email: approverAdmin.email,
+              },
+              player:{
+                name: name,
+                email:email
+              },
+              reason: reason,
+            });
           }
         }
       }

@@ -4,7 +4,9 @@ const documentApproval = require("./documentApprovalTemplate");
 const documentApprovalAdmin = require("./documentApprovalTemplateAdmin");
 const documentDisapproval = require("./documentDisApprovalTemplate");
 const employmentContractApproval = require("./EmploymentContractApprovalTemplate");
+const employmentContractApprovalAdmin = require("./EmploymentContractApprovalTemplateAdmin");
 const employmentContractDisapproval = require("./EmploymentContractDisapprovalTemplate");
+const employmentContractDisapprovalAdmin = require("./EmploymentContractDisapprovalTemplateAdmin");
 const documentDisapprovalTemplateAdmin = require("./documentDisapprovalTemplateAdmin");
 
 module.exports = {
@@ -16,4 +18,6 @@ module.exports = {
   documentDisapprovalTemplateAdmin,
   employmentContractApproval,
   employmentContractDisapproval,
+  employmentContractApprovalAdmin,
+  employmentContractDisapprovalAdmin,
 };
