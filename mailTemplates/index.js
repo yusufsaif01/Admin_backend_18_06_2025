@@ -1,5 +1,3 @@
-const profileVerified = require("./profileVerifiedTemplate");
-const profileDisapproved = require("./profileDisapprovedTemplate");
 const documentApproval = require("./documentApprovalTemplate");
 const documentApprovalAdmin = require("./documentApprovalTemplateAdmin");
 const documentDisapproval = require("./documentDisApprovalTemplate");
@@ -10,8 +8,6 @@ const employmentContractDisapprovalAdmin = require("./employmentContractDisappro
 const documentDisapprovalTemplateAdmin = require("./documentDisapprovalTemplateAdmin");
 
 module.exports = {
-  profileVerified,
-  profileDisapproved,
   documentApproval,
   documentApprovalAdmin,
   documentDisapproval,

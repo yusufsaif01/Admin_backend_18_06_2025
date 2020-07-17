@@ -21,12 +21,6 @@ class EmailService {
         }
     }
 
-    async profileVerified (email) {
-        await this.sendMail("profileVerified", {email: email});
-    }
-    async profileDisapproved (email, remarks) {
-        await this.sendMail("profileDisapproved", {email: email, remarks});
-    }
 
     async documentApproval (data) {
         await this.sendMail("documentApproval", data)
