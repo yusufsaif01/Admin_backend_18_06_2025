@@ -3,10 +3,10 @@ const profileDisapproved = require("./profileDisapprovedTemplate");
 const documentApproval = require("./documentApprovalTemplate");
 const documentApprovalAdmin = require("./documentApprovalTemplateAdmin");
 const documentDisapproval = require("./documentDisApprovalTemplate");
-const employmentContractApproval = require("./EmploymentContractApprovalTemplate");
-const employmentContractApprovalAdmin = require("./EmploymentContractApprovalTemplateAdmin");
-const employmentContractDisapproval = require("./EmploymentContractDisapprovalTemplate");
-const employmentContractDisapprovalAdmin = require("./EmploymentContractDisapprovalTemplateAdmin");
+const employmentContractApproval = require("./employmentContractApprovalTemplate");
+const employmentContractApprovalAdmin = require("./employmentContractApprovalTemplateAdmin");
+const employmentContractDisapproval = require("./employmentContractDisapprovalTemplate");
+const employmentContractDisapprovalAdmin = require("./employmentContractDisapprovalTemplateAdmin");
 const documentDisapprovalTemplateAdmin = require("./documentDisapprovalTemplateAdmin");
 
 module.exports = {
