@@ -51,7 +51,7 @@ module.exports = ({ email, name, member_type, reason }) => {
 					<p style="font-family: 'Montserrat', sans-serif;
 					font-size: 16px;font-weight: 300;color:#626262;
 					">
-						We apologies to inform you that YFTChain hs not approved your <br> document information due to ${reason} </p>
+						We apologise to inform you that YFTChain has not approved your document information due to ${reason} </p>
 				</td>
 			</tr>
 			<tr style="height: 10px;">
@@ -62,10 +62,17 @@ module.exports = ({ email, name, member_type, reason }) => {
 					<p style="font-family: 'Montserrat', sans-serif;
 					font-size: 16px;font-weight: 300;color:#626262;
 					">
-            We request that you as a player verify that you re holding a valid document by
-            <br> providing correct information.
-            <br> Please click below to go the YFTChain's portal and add/update your document information  
-          </p>
+						We request that you as a player verify that you are holding a valid document by providing correct information.
+					</p>
+				</td>
+			</tr>
+			<tr style="display:block; width: 100%;text-align: center;">
+				<td style="display:block; width: 100%; text-align: center;">
+					<p style="font-family: 'Montserrat', sans-serif;
+					font-size: 16px;font-weight: 300;color:#626262;
+					">
+						Please click below to go the YFTChain's portal and add/update your document information  
+					</p>
 				</td>
 			</tr>
 			<tr style="height: 40px;">
@@ -98,20 +105,6 @@ module.exports = ({ email, name, member_type, reason }) => {
 				<td></td>
 			</tr>
 
-			<!-- See you online -->
-
-			<tr style="display:block; width: 100%;text-align: center;">
-				<td style=" display:block; width: 100%; text-align: center;">
-					<p style="font-family: 'Montserrat', sans-serif;
-					font-size: 18px;font-weight: 300;color:#626262;
-					">
-						See you online!
-					</p>
-					<p style="font-family: 'Montserrat', sans-serif;
-					font-size: 20px; font-weight: 700;display:block;color:#626262;
-					">YFTChain Team</p>
-				</td>
-			</tr>
 			<tr style=" height: 20px;">
 				<td></td>
 			</tr>
