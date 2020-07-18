@@ -5,6 +5,7 @@ const DOCUMENT_TYPE = require('../../constants/DocumentType');
 const Schema = mongoose.Schema;
 const PLAYER = require('../../constants/PlayerType')
 const DOCUMENT_STATUS = require('../../constants/DocumentStatus')
+const GENDER = require('../../constants/gender')
 
 module.exports = {
     fields: {
@@ -45,6 +46,10 @@ module.exports = {
         dob: {
             type: String
         },
+        gender: {
+            type: String,
+            enum: [GENDER.MALE, GENDER.FEMALE]
+        },
         country: {
             id: {
                 type: String
@@ -72,6 +77,7 @@ module.exports = {
         email: {
             type: String
         },
+        // phone field is being used for mobile_number
         phone: {
             type: String
         },
@@ -155,10 +161,7 @@ module.exports = {
                 type: String
             }
         },
-        former_club: {
-            type: String
-        },
-        former_academy: {
+        former_club_academy: {
             type: String
         },
         player_type: {
@@ -182,9 +185,12 @@ module.exports = {
             },
             instagram: {
                 type: String
+            },
+            linked_in: {
+                type: String
             }
         },
-        associated_club: {
+        associated_club_academy: {
             type: String
         },
         association: {
