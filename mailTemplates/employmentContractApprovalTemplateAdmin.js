@@ -1,10 +1,13 @@
-module.exports = ({ email, name, member_type, from_email }) => {
+module.exports = ({ email, admin, player }) => {
   return {
     to: email,
-    subject: `${name} Document details approval confirmation`,
+    subject: `${player.name} Contract details approval confirmation`,
+    // html: "",
+    text: `Employment contract for ${player.name} has been approved successfully.`,
+
     html() {
       return `
-      <tbody style="display: block;width: 80%; margin:auto;">
+        <tbody style="display: block;width: 80%; margin:auto;">
 			<tr style="height: 20px;">
 				<td></td>
 			</tr>
@@ -32,7 +35,7 @@ module.exports = ({ email, name, member_type, from_email }) => {
 					<p style="font-family: 'Montserrat', sans-serif;
 					font-size: 16px;font-weight: 300;color:#626262;
 					">
-						Document details provided by the following academy has been approved through the system.
+						A contract submitted by following player has been approved.
 					</p>
 				</td>
 			</tr>
@@ -45,7 +48,11 @@ module.exports = ({ email, name, member_type, from_email }) => {
 				<td style="display:block; width: 100%; text-align: center;">
 					<p style="font-family: 'Montserrat', sans-serif;
 					font-size: 20px; font-weight: 700;display:block;color:#626262;">
-						Academy Name: ${name}
+						Approval member name: ${admin.name}
+					</p>
+					<p style="font-family: 'Montserrat', sans-serif;
+					font-size: 20px; font-weight: 700;display:block;color:#626262;">
+						Approval member email: ${admin.email}
 					</p>
 				</td>
 			</tr>
@@ -58,10 +65,15 @@ module.exports = ({ email, name, member_type, from_email }) => {
 				<td style="display:block; width: 100%; text-align: center;">
 					<p style="font-family: 'Montserrat', sans-serif;
 					font-size: 20px; font-weight: 700;display:block;color:#626262;">
-						Member email id: ${from_email}
+						Approved member name: ${player.name}
+					</p>
+					<p style="font-family: 'Montserrat', sans-serif;
+					font-size: 20px; font-weight: 700;display:block;color:#626262;">
+						Approved member email: ${player.email}
 					</p>
 				</td>
 			</tr>
+
 
 			<tr style="height: 40px;">
 				<td></td>
