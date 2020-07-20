@@ -21,12 +21,6 @@ class EmailService {
         }
     }
 
-    async profileVerified (email) {
-        await this.sendMail("profileVerified", {email: email});
-    }
-    async profileDisapproved (email, remarks) {
-        await this.sendMail("profileDisapproved", {email: email, remarks});
-    }
 
     async documentApproval (data) {
         await this.sendMail("documentApproval", data)
@@ -46,9 +40,15 @@ class EmailService {
     async employmentContractApproval (data) {
         await this.sendMail("employmentContractApproval", data)
     }
+    async employmentContractApprovalAdmin (data) {
+        await this.sendMail("employmentContractApprovalAdmin", data);
+    }
         
     async employmentContractDisapproval (data) {
         await this.sendMail("employmentContractDisapproval", data)
+    }
+    async employmentContractDisapprovalAdmin (data) {
+        await this.sendMail("employmentContractDisapprovalAdmin", data);
     }
 
 

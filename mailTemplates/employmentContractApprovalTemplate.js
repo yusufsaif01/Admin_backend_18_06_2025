@@ -1,22 +1,13 @@
-const MEMBER = require('../constants/MemberType')
-
-module.exports = ({ email, name, member_type }) => {
-  let email_text = "";
-  if (member_type === MEMBER.PLAYER) {
-    email_text = `Aadhaar details for ${name} ${member_type} has been approved successfully by YFTChain.`
-  }
-  if (member_type === MEMBER.ACADEMY) {
-    email_text = `Document details for ${name} ${member_type} has been approved successfully by YFTChain.`
-  }
-  if (member_type === MEMBER.CLUB) {
-    email_text = `AIFF document details for ${name} ${member_type} has been approved successfully by YFTChain.`
-  }
+module.exports = ({ email, name }) => {
   return {
     to: email,
-    subject: "Document Approved",
+    subject: "Contract Approved",
+    // html: "",
+    text: `Employment Contract for ${name} has been approved successfully`,
+
     html(data) {
       return `
-      <tbody style="display: block;width: 80%; margin:auto;">
+		<tbody style="display: block;width: 80%; margin:auto;">
 			<tr style="height: 20px;">
 				<td></td>
 			</tr>
@@ -30,12 +21,12 @@ module.exports = ({ email, name, member_type }) => {
 				<td style="display:block; width: 100%; text-align: center;">
 					<h1 style="font-family: 'Paytone One', sans-serif;
 					font-size: 48px;font-weight: 700;color:#626262">
-						Congratulations, you have</h1>
+						Congratulations, your contract has</h1>
 				</td>
 				<td style="display:block; width: 100%; text-align: center;">
 					<h1 style="font-family: 'Paytone One', sans-serif;
 					font-size: 48px;font-weight: 700;color:#626262">
-						full access now !</h1>
+						been approved</h1>
 				</td>
 			</tr>
 			<!--  -->
@@ -49,18 +40,29 @@ module.exports = ({ email, name, member_type }) => {
 					<p style="font-family: 'Montserrat', sans-serif;
 					font-size: 16px;font-weight: 300;color:#626262;
 					">
-						Thank you for uploading your documents on the YFTChain platform.</p>
+						We are pleased to inform you that YFTChain has approved your contract information and you will be identified as a verified professional player.</p>
 				</td>
 			</tr>
-			<tr style="height: 10px;">
-				<td></td>
-			</tr>
+
 			<tr style="display:block; width: 100%;text-align: center;">
 				<td style="display:block; width: 100%; text-align: center;">
 					<p style="font-family: 'Montserrat', sans-serif;
 					font-size: 16px;font-weight: 300;color:#626262;
 					">
-						We are pleased to confirm that the verification process for your YFTChain account has been completed according to the data you provided us with !</p>
+						Your verified professional status will be showcased with a <span style="font-family: 'Montserrat', sans-serif;font-weight: 700;display:block;color:#626262">green tick on the YFTChain portal.</span></p>
+				</td>
+			</tr>
+
+			<tr style="height: 10px;">
+				<td></td>
+			</tr>
+
+			<tr style="display:block; width: 100%;text-align: center;">
+				<td style="display:block; width: 100%; text-align: center;">
+					<p style="font-family: 'Montserrat', sans-serif;
+					font-size: 16px;font-weight: 300;color:#626262;
+					">
+						Please click below to go to YFTChain portal and witness your new status.</p>
 				</td>
 			</tr>
 			<tr style="height: 40px;">
@@ -79,25 +81,15 @@ module.exports = ({ email, name, member_type }) => {
 				<td></td>
 			</tr>
 
-			<tr style="display:block; width: 100%;text-align: center;">
-				<td style="display:block; width: 100%; text-align: center;">
-					<p style="font-family: 'Montserrat', sans-serif;
-					font-size: 16px;font-weight: 300;color:#626262;
-					">
-						You have successfully unlocked a new world of YFTChain's features. Thank you.</p>
-				</td>
-			</tr>
-			<tr style="height: 20px;">
-				<td></td>
-			</tr>
+			
 
+			
 			<tr style=" height: 20px;">
 				<td></td>
 			</tr>
 			<!-- end  -->
-		</tbody>
-      `;
+		</tbody>	
+	  `;
     },
-    text: email_text
   };
 };

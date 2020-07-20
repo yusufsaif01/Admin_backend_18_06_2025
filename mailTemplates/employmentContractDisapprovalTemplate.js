@@ -1,22 +1,13 @@
-const MEMBER = require('../constants/MemberType')
-
-module.exports = ({ email, name, member_type }) => {
-  let email_text = "";
-  if (member_type === MEMBER.PLAYER) {
-    email_text = `Aadhaar details for ${name} ${member_type} has been approved successfully by YFTChain.`
-  }
-  if (member_type === MEMBER.ACADEMY) {
-    email_text = `Document details for ${name} ${member_type} has been approved successfully by YFTChain.`
-  }
-  if (member_type === MEMBER.CLUB) {
-    email_text = `AIFF document details for ${name} ${member_type} has been approved successfully by YFTChain.`
-  }
+module.exports = ({ email, name, reason }) => {
   return {
     to: email,
-    subject: "Document Approved",
+    subject: "Contract Disapproved",
+    // html: "",
+    text: `Employment Contract for ${name} has been disapproved due to ${reason} reason, Please update again.`,
+
     html(data) {
       return `
-      <tbody style="display: block;width: 80%; margin:auto;">
+		<tbody style="display: block;width: 80%; margin:auto;">
 			<tr style="height: 20px;">
 				<td></td>
 			</tr>
@@ -30,12 +21,12 @@ module.exports = ({ email, name, member_type }) => {
 				<td style="display:block; width: 100%; text-align: center;">
 					<h1 style="font-family: 'Paytone One', sans-serif;
 					font-size: 48px;font-weight: 700;color:#626262">
-						Congratulations, you have</h1>
+						Sorry, looks like your contract</h1>
 				</td>
 				<td style="display:block; width: 100%; text-align: center;">
 					<h1 style="font-family: 'Paytone One', sans-serif;
 					font-size: 48px;font-weight: 700;color:#626262">
-						full access now !</h1>
+						needs to be updated</h1>
 				</td>
 			</tr>
 			<!--  -->
@@ -49,7 +40,7 @@ module.exports = ({ email, name, member_type }) => {
 					<p style="font-family: 'Montserrat', sans-serif;
 					font-size: 16px;font-weight: 300;color:#626262;
 					">
-						Thank you for uploading your documents on the YFTChain platform.</p>
+						We apologise to inform you that YFTChain has not approved your contract information due to ${reason}.</p>
 				</td>
 			</tr>
 			<tr style="height: 10px;">
@@ -60,7 +51,15 @@ module.exports = ({ email, name, member_type }) => {
 					<p style="font-family: 'Montserrat', sans-serif;
 					font-size: 16px;font-weight: 300;color:#626262;
 					">
-						We are pleased to confirm that the verification process for your YFTChain account has been completed according to the data you provided us with !</p>
+						We request that you as a player verify that you are holding a valid contract by providing correct information.</p>
+				</td>
+			</tr>
+			<tr style="display:block; width: 100%;text-align: center;">
+				<td style="display:block; width: 100%; text-align: center;">
+					<p style="font-family: 'Montserrat', sans-serif;
+					font-size: 16px;font-weight: 300;color:#626262;
+					">
+						Please click below to go to the YFTChain's portal and add/update your contract information.</p>
 				</td>
 			</tr>
 			<tr style="height: 40px;">
@@ -84,7 +83,7 @@ module.exports = ({ email, name, member_type }) => {
 					<p style="font-family: 'Montserrat', sans-serif;
 					font-size: 16px;font-weight: 300;color:#626262;
 					">
-						You have successfully unlocked a new world of YFTChain's features. Thank you.</p>
+						Once your contract has been approved, you will be treated as a professional player on the YFTChain portal.</p>
 				</td>
 			</tr>
 			<tr style="height: 20px;">
@@ -95,9 +94,8 @@ module.exports = ({ email, name, member_type }) => {
 				<td></td>
 			</tr>
 			<!-- end  -->
-		</tbody>
-      `;
+		</tbody>	
+	  `;
     },
-    text: email_text
   };
 };
