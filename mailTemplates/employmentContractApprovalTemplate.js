@@ -3,7 +3,7 @@ module.exports = ({ email, name }) => {
     to: email,
     subject: "Contract Approved",
     // html: "",
-    text: `Employment Contract for ${name} has been approved successfully.`,
+    text: `Employment Contract for ${name} has been approved successfully`,
 
     html(data) {
       return `
