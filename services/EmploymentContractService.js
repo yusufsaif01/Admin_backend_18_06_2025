@@ -91,6 +91,12 @@ class EmploymentContractService {
       let data = await this.employmentContractUtilityInst.aggregate([{ $match: matchCondition }, { $sort: { createdAt: -1 } },
       { "$lookup": { "from": "login_details", "localField": "sent_by", "foreignField": "user_id", "as": "login_detail" } },
       { $unwind: { path: "$login_detail" } }, { "$lookup": { "from": "club_academy_details", "localField": "club_academy_email", "foreignField": "email", "as": "clubAcademyDetail" } },
+      {
+        $project: {
+          clubAcademyDetail: { $filter: { input: "$clubAcademyDetail", as: "element", cond: { $eq: [{ $ifNull: ["$$element.deleted_at", null] }, null] } } },
+          id: 1, player_name: 1, club_academy_name: 1, effective_date: 1, expiry_date: 1, status: 1, login_detail: 1, send_to: 1 
+        }
+      },
       { $unwind: { path: "$clubAcademyDetail", preserveNullAndEmptyArrays: true } },
       {
         $project: {
