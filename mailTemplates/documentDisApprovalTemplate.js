@@ -71,7 +71,7 @@ module.exports = ({ email, name, member_type, reason }) => {
 					<p style="font-family: 'Montserrat', sans-serif;
 					font-size: 16px;font-weight: 300;color:#626262;
 					">
-						Please click below to go the YFTChain's portal and add/update your document information  
+						Please click below to go to the YFTChain's portal and add/update your document information  
 					</p>
 				</td>
 			</tr>
