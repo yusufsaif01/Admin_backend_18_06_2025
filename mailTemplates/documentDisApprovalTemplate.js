@@ -13,7 +13,7 @@ module.exports = ({ email, name, member_type, reason }) => {
   }
   return {
     to: email,
-    subject: "Your document details is disapproved",
+    subject: "Document not approved",
     // html: "",
     text: email_text,
     html(data) {
