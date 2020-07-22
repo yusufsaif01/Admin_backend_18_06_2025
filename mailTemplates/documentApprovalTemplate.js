@@ -13,7 +13,7 @@ module.exports = ({ email, name, member_type }) => {
   }
   return {
     to: email,
-    subject: "Document Approved",
+    subject: "Document approved",
     html(data) {
       return `
       <tbody style="display: block;width: 80%; margin:auto;">
@@ -98,6 +98,6 @@ module.exports = ({ email, name, member_type }) => {
 		</tbody>
       `;
     },
-    text: email_text
+    text: email_text,
   };
 };
