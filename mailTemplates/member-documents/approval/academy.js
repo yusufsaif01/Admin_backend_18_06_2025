@@ -1,7 +1,7 @@
 module.exports = ({ email, name, member_type, from_email }) => {
   return {
     to: email,
-    subject: `${name} Document details approval confirmation`,
+    subject: `${name} document details approval confirmation`,
     html() {
       return `
       <tbody style="display: block;width: 80%; margin:auto;">
