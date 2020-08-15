@@ -8,6 +8,7 @@ const AttributeListResponseMapper = require("../dataModels/responseMapper/Attrib
 const PositionListResponseMapper = require("../dataModels/responseMapper/PositionListResponseMapper");
 const RESPONSE_MESSAGE = require('../constants/ResponseMessage');
 const PlayerUtility = require('../db/utilities/PlayerUtility')
+const ReportCardUtility = require('../db/utilities/ReportCardUtility');
 
 class PlayerSpecializationService {
 
@@ -16,6 +17,7 @@ class PlayerSpecializationService {
         this.attributeUtilityInst = new AttributeUtility();
         this.positionUtilityInst = new PositionUtility();
         this.playerUtilityInst = new PlayerUtility();
+        this.reportCardUtilityInst = new ReportCardUtility();
     }
     async addAbility(data = {}) {
         try {
@@ -71,6 +73,7 @@ class PlayerSpecializationService {
                     return Promise.reject(new errors.Conflict(RESPONSE_MESSAGE.ABILITY_ALREADY_ADDED));
             }
             await this.abilityUtilityInst.updateOne({ id: data.ability_id }, { name: reqObj.name })
+            await this.reportCardUtilityInst.updateMany({ abilities: { $elemMatch: { ability_id: data.ability_id } } }, { "abilities.$.ability_name": reqObj.name });
             return Promise.resolve()
         } catch (e) {
             console.log("Error in editAbility() of PlayerSpecializationService", e);
@@ -146,6 +149,9 @@ class PlayerSpecializationService {
                     return Promise.reject(new errors.Conflict(RESPONSE_MESSAGE.ATTRIBUTE_ALREADY_ADDED));
             }
             await this.attributeUtilityInst.updateOne({ id: data.attribute_id }, { name: reqObj.name })
+            await this.reportCardUtilityInst.updateMany({ abilities: { $elemMatch: { ability_id: data.ability_id } } },
+                { "abilities.$[].attributes.$[attribute].attribute_name": reqObj.name },
+                { arrayFilters: [{ "attribute.attribute_id": data.attribute_id }] });
             return Promise.resolve()
         } catch (e) {
             console.log("Error in editAttribute() of PlayerSpecializationService", e);
