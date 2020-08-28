@@ -6,6 +6,7 @@ const playerSpecializationRoutes = require('./player-specialization.rest');
 const playerDocuments = require('./player-documents.rest');
 const clubAcademyDocuments = require('./club-academy-documents.rest');
 const employmentContract = require('./employment-contract.rest');
+const accessWhitelist = require('./access-whitelist.rest');
 
 class Route {
 	loadRoutes(app) {
@@ -18,6 +19,7 @@ class Route {
 		playerDocuments(apiRouter);
 		clubAcademyDocuments(apiRouter);
 		employmentContract(apiRouter);
+		accessWhitelist(apiRouter);
 
 		app.use('/api', apiRouter);
 		app.use("/apidocs", express.static("apidocs/doc"));
