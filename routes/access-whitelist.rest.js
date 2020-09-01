@@ -7,7 +7,6 @@ const ResponseHandler = require("../ResponseHandler");
 const accessWhiteListInst = new AccessWhitelistService();
 
 module.exports = (router) => {
-  // admin management
   router.get(
     "/access-whitelist",
     checkAuthToken,
@@ -40,6 +39,20 @@ module.exports = (router) => {
         req,
         res,
         accessWhiteListInst.updateOne(req.params.id, req.body)
+      );
+    }
+  );
+  router.put(
+    "/access-whitelist/:id/status",
+    checkAuthToken,
+    checkRole(ROLE.ADMIN),
+    accessWhitelistValidator.status,
+    (req, res) => {
+      const { status } = req.body;
+      ResponseHandler(
+        req,
+        res,
+        accessWhiteListInst.updateStatus(req.params.id, status)
       );
     }
   );

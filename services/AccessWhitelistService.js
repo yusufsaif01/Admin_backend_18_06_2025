@@ -2,6 +2,7 @@ const AccessWhitelistUtility = require("../db/utilities/AccessWhitelistUtility")
 const errors = require("../errors");
 const ResponseMessage = require("../constants/ResponseMessage");
 const WhiteListResponseMapper = require("../dataModels/responseMapper/WhitelistResponseMapper");
+const WhitelistStatus = require("../constants/WhitelistStatus");
 
 module.exports = class AccessWhitelistService {
   constructor() {
@@ -11,7 +12,7 @@ module.exports = class AccessWhitelistService {
   async whiteListUser(data) {
     try {
       await this.checkDuplicateRecord(data);
-
+      data.status = WhitelistStatus.ACTIVE;
       await this.accessWhiteListInst.insert(data);
       return Promise.resolve();
     } catch (error) {
@@ -45,7 +46,7 @@ module.exports = class AccessWhitelistService {
   async updateOne(id, data) {
     try {
       await this.checkDuplicateRecord(data, id);
-      const response = this.updateWhiteListUser(
+      const response = await this.updateWhiteListUser(
         {
           id,
         },
@@ -105,6 +106,22 @@ module.exports = class AccessWhitelistService {
       };
     } catch (error) {
       console.log("Error in getting list", error);
+      return Promise.reject(error);
+    }
+  }
+
+  async updateStatus(id, status) {
+    try {
+      const response = await this.updateWhiteListUser(
+        { id: id, is_deleted: false },
+        { status }
+      );
+      if (!response.n) {
+        throw new errors.NotFound();
+      }
+      return Promise.resolve();
+    } catch (error) {
+      console.log("error in updating status of whitelisted record", error);
       return Promise.reject(error);
     }
   }
