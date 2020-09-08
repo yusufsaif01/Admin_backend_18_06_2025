@@ -9,9 +9,15 @@ class AccessWhitelistValidator {
     const schema = Joi.object().keys({
       name: Joi.string()
         .regex(/^(?:[0-9]+[ a-zA-Z]|[a-zA-Z])[a-zA-Z0-9 ]*$/)
+        .empty("")
+        .optional("")
+        .default("")
         .error(() => ResponseMessage.NAME_INVALID),
       phone: Joi.string()
         .regex(/^[0-9]{10}$/)
+        .empty("")
+        .optional("")
+        .default("")
         .error(() => ResponseMessage.PHONE_NUMBER_INVALID),
       email: Joi.string().required().email(),
     });
