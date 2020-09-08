@@ -9,6 +9,7 @@ const PositionListResponseMapper = require("../dataModels/responseMapper/Positio
 const RESPONSE_MESSAGE = require('../constants/ResponseMessage');
 const PlayerUtility = require('../db/utilities/PlayerUtility')
 const ReportCardUtility = require('../db/utilities/ReportCardUtility');
+const { map } = require("bluebird");
 
 class PlayerSpecializationService {
 
@@ -149,9 +150,7 @@ class PlayerSpecializationService {
                     return Promise.reject(new errors.Conflict(RESPONSE_MESSAGE.ATTRIBUTE_ALREADY_ADDED));
             }
             await this.attributeUtilityInst.updateOne({ id: data.attribute_id }, { name: reqObj.name })
-            await this.reportCardUtilityInst.updateMany({ abilities: { $elemMatch: { ability_id: data.ability_id } } },
-                { "abilities.$[].attributes.$[attribute].attribute_name": reqObj.name },
-                { arrayFilters: [{ "attribute.attribute_id": data.attribute_id }] });
+            await this.updateAttributeInReportCards(data);
             return Promise.resolve()
         } catch (e) {
             console.log("Error in editAttribute() of PlayerSpecializationService", e);
@@ -242,7 +241,7 @@ class PlayerSpecializationService {
             if (reqObj.abilities)
                 record.abilities = reqObj.abilities;
             await this.positionUtilityInst.updateOne({ id: data.position_id }, record)
-            await this.playerUtilityInst.updateMany({ position: { $elemMatch: { id: data.position_id } } }, { "position.$[elem].name": reqObj.name }, { arrayFilters: [{ "elem.id": data.position_id }] });
+            await this.updatePositionInPlayerDetails(data)
             return Promise.resolve()
         } catch (e) {
             console.log("Error in editPosition() of PlayerSpecializationService", e);
@@ -278,6 +277,60 @@ class PlayerSpecializationService {
             return Promise.resolve()
         }
         catch (e) {
+            return Promise.reject(e);
+        }
+    }
+
+    /**
+     * updates position in player_details collection
+     *
+     * @param {*} [data={}]
+     * @returns
+     * @memberof PlayerSpecializationService
+     */
+    async updatePositionInPlayerDetails(data = {}) {
+        try {
+            await map([1, 2, 3], async (priority) => {
+                await this.playerUtilityInst.updateMany({ position: { $elemMatch: { id: data.position_id, priority: priority } } }, { "position.$.name": data.reqObj.name })
+            })
+            return Promise.resolve()
+        } catch (e) {
+            console.log("Error in updatePositionInPlayerDetails() of PlayerSpecializationService", e);
+            return Promise.reject(e);
+        }
+    }
+
+    /**
+     * updates attribute in report_cards collection
+     *
+     * @param {*} [data={}]
+     * @returns
+     * @memberof PlayerSpecializationService
+     */
+    async updateAttributeInReportCards(data = {}) {
+        try {
+            let report_cards = await this.reportCardUtilityInst.find({
+                abilities: {
+                    $elemMatch: {
+                        ability_id: data.ability_id,
+                        attributes: { $elemMatch: { attribute_id: data.attribute_id } }
+                    }
+                }
+            },
+                { id: 1, _id: 0, abilities: 1 });
+            await map(report_cards, async (report_card) => {
+                let ability_index = _.findIndex(report_card.abilities, (ability) => {
+                    return ability.ability_id == data.ability_id;
+                }, 0);
+                let attribute_index = _.findIndex(report_card.abilities[ability_index].attributes, (attribute) => {
+                    return attribute.attribute_id == data.attribute_id;
+                }, 0);
+                let updatedDoc = { ["abilities." + ability_index + ".attributes." + attribute_index + ".attribute_name"]: data.reqObj.name }
+                await this.reportCardUtilityInst.updateOne({ id: report_card.id }, updatedDoc);
+            })
+            return Promise.resolve()
+        } catch (e) {
+            console.log("Error in updateAttributesInReportCards() of PlayerSpecializationService", e);
             return Promise.reject(e);
         }
     }
