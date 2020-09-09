@@ -6,7 +6,8 @@ const playerSpecializationRoutes = require('./player-specialization.rest');
 const playerDocuments = require('./player-documents.rest');
 const clubAcademyDocuments = require('./club-academy-documents.rest');
 const employmentContract = require('./employment-contract.rest');
-
+const accessWhitelist = require('./access-whitelist.rest');
+const checkAccessToken = require("../middleware/auth/access-token");
 class Route {
 	loadRoutes(app) {
 		const apiRouter = express.Router();
@@ -18,10 +19,11 @@ class Route {
 		playerDocuments(apiRouter);
 		clubAcademyDocuments(apiRouter);
 		employmentContract(apiRouter);
+		accessWhitelist(apiRouter);
 
-		app.use('/api', apiRouter);
-		app.use("/apidocs", express.static("apidocs/doc"));
-		app.use("/uploads", express.static("uploads"));
+		app.use('/api', checkAccessToken(), apiRouter);
+		app.use("/apidocs", checkAccessToken(), express.static("apidocs/doc"));
+		app.use("/uploads", checkAccessToken(), express.static("uploads"));
 	}
 }
 
