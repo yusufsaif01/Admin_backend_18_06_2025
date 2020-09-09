@@ -422,6 +422,19 @@ class ResponseMessage {
     static get ANOTHER_ACTIVE_CONTRACT_EXIST() {
         return "Player has another active contract"
     }
+
+    static get USER_ALREADY_WHITELISTED () {
+        return "User is already whitelisted";
+    }
+    static get ACCESS_TOKEN_REQUIRED() {
+        return "Access token is required";
+    }
+    static get ACCESS_TOKEN_INVALID() {
+        return "Access token is invalid";
+    }
+    static get ACCESS_TOKEN_EXPIRED() {
+        return "Access token is expired";
+    }
 }
 
 module.exports = ResponseMessage
