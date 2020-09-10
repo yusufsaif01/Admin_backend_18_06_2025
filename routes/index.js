@@ -22,8 +22,8 @@ class Route {
 		accessWhitelist(apiRouter);
 
 		app.use('/api', checkAccessToken(), apiRouter);
-		app.use("/apidocs", checkAccessToken(), express.static("apidocs/doc"));
-		app.use("/uploads", checkAccessToken(), express.static("uploads"));
+		app.use("/apidocs", express.static("apidocs/doc"));
+		app.use("/uploads", express.static("uploads"));
 	}
 }
 
