@@ -1,5 +1,5 @@
 module.exports = ({ email, admin, player }) => {
-	player.name = player.name.charAt(0).toUpperCase() + player.name.slice(1)
+  player.name = player.name.charAt(0).toUpperCase() + player.name.slice(1);
   return {
     to: email,
     subject: `${player.name} employment contract details approved`,
@@ -8,83 +8,320 @@ module.exports = ({ email, admin, player }) => {
 
     html() {
       return `
-        <tbody style="display: block;width: 80%; margin:auto;">
-			<tr style="height: 20px;">
-				<td></td>
-			</tr>
 
-			<!-- paragraph -->
-			<tr style="height: 20px;">
-				<td></td>
-			</tr>
-			<tr style="display:block; width: 100%;text-align: center;">
-				<td style="display:block; width: 100%; text-align: center;">
-					<p style="font-family: 'Montserrat', sans-serif;
-					font-size: 16px;font-weight: 300;color:#626262;
-					">
-						Hello Admin
-					</p>
-				</td>
-			</tr>
-
-			<tr style="height: 10px;">
-				<td></td>
-			</tr>
-
-			<tr style="display:block; width: 100%;text-align: center;">
-				<td style="display:block; width: 100%; text-align: center;">
-					<p style="font-family: 'Montserrat', sans-serif;
-					font-size: 16px;font-weight: 300;color:#626262;
-					">
-						A contract submitted by following player has been approved.
-					</p>
-				</td>
-			</tr>
-
-			<tr style="height: 10px;">
-				<td></td>
-			</tr>
-
-			<tr style="display:block; width: 100%;text-align: center;">
-				<td style="display:block; width: 100%; text-align: center;">
-					<p style="font-family: 'Montserrat', sans-serif;
-					font-size: 20px; font-weight: 700;display:block;color:#626262;">
-						Approval member name: ${admin.name.charAt(0).toUpperCase() + admin.name.slice(1)}
-					</p>
-					<p style="font-family: 'Montserrat', sans-serif;
-					font-size: 20px; font-weight: 700;display:block;color:#626262;">
-						Approval member email: ${admin.email}
-					</p>
-				</td>
-			</tr>
-
-			<tr style="height: 10px;">
-				<td></td>
-			</tr>
-
-			<tr style="display:block; width: 100%;text-align: center;">
-				<td style="display:block; width: 100%; text-align: center;">
-					<p style="font-family: 'Montserrat', sans-serif;
-					font-size: 20px; font-weight: 700;display:block;color:#626262;">
-						Approved member name: ${player.name}
-					</p>
-					<p style="font-family: 'Montserrat', sans-serif;
-					font-size: 20px; font-weight: 700;display:block;color:#626262;">
-						Approved member email: ${player.email}
-					</p>
-				</td>
-			</tr>
-
-
-			<tr style="height: 40px;">
-				<td></td>
-			</tr>
-
-			<tr style=" height: 20px;">
-				<td></td>
-			</tr>
-			<!-- end  -->
-		</tbody>
+<table class="spacer" style="
+   border-collapse: collapse;
+   border-spacing: 0;
+   padding: 0;
+   vertical-align: top;
+   width: 100%;
+   ">
+    <tbody>
+        <tr style="padding: 0; vertical-align: top">
+            <td height="20" style="
+            -moz-hyphens: auto;
+            -webkit-hyphens: auto;
+            border-collapse: collapse !important;
+            hyphens: auto;
+            line-height: 20px;
+            margin: 0;
+            mso-line-height-rule: exactly;
+            padding: 0;
+            vertical-align: top;
+            word-wrap: break-word;
+            "></td>
+        </tr>
+    </tbody>
+</table>
+<table width="100%" style="
+   border-collapse: collapse;
+   border-spacing: 0;
+   padding: 0;
+   vertical-align: top;
+   ">
+    <tbody>
+        <tr style="padding: 0; vertical-align: top">
+            <th style="
+            color: #626262;
+            line-height: 1.3;
+            margin: 0;
+            padding: 0;
+            ">
+                <h2 class="text-center" style="
+               color: #626262;
+               font-family: 'Paytone One',
+               'Montserrat ', sans-serif;
+               font-size: 30px;
+               font-weight: 700;
+               line-height: 1.3;
+               margin: auto;
+               padding: 0;
+               text-align: center;
+               width: 90%;
+               word-wrap: normal;
+               ">
+                    Hello Admin
+                </h2>
+            </th>
+        </tr>
+    </tbody>
+</table>
+<table class="spacer" style="
+   border-collapse: collapse;
+   border-spacing: 0;
+   padding: 0;
+   vertical-align: top;
+   width: 100%;
+   ">
+    <tbody>
+        <tr style="padding: 0; vertical-align: top">
+            <td height="20" style="
+            -moz-hyphens: auto;
+            -webkit-hyphens: auto;
+            border-collapse: collapse !important;
+            color: #626262;
+            hyphens: auto;
+            margin: 0;
+            mso-line-height-rule: exactly;
+            padding: 0;
+            vertical-align: top;
+            word-wrap: break-word;
+            "></td>
+        </tr>
+    </tbody>
+</table>
+<table width="100%" style="
+   border-collapse: collapse;
+   border-spacing: 0;
+   padding: 0;
+   vertical-align: top;
+   ">
+    <tbody>
+        <tr style="padding: 0; vertical-align: top">
+            <th style="margin: 0; padding: 0">
+                <p class="text-center" style="
+               color: #626262;
+               font-family: Montserrat, sans-serif;
+               font-size: 14px;
+               font-weight: 300;
+               line-height: 1.3;
+               margin: auto;
+               margin-bottom: 0px;
+               padding: 0;
+               text-align: center;
+               width: 90%;
+               ">
+                    A contract submitted by following player
+                    has been approved.
+                </p>
+            </th>
+        </tr>
+    </tbody>
+</table>
+<table class="spacer" style="
+   border-collapse: collapse;
+   border-spacing: 0;
+   padding: 0;
+   vertical-align: top;
+   width: 100%;
+   ">
+    <tbody>
+        <tr style="padding: 0; vertical-align: top">
+            <td height="10" style="
+            -moz-hyphens: auto;
+            -webkit-hyphens: auto;
+            border-collapse: collapse !important;
+            hyphens: auto;
+            margin: 0;
+            mso-line-height-rule: exactly;
+            padding: 0;
+            vertical-align: top;
+            word-wrap: break-word;
+            "></td>
+        </tr>
+    </tbody>
+</table>
+<table width="100%" style="
+   border-collapse: collapse;
+   border-spacing: 0;
+   padding: 0;
+   vertical-align: top;
+   ">
+    <tbody>
+        <tr style="padding: 0; vertical-align: top">
+            <th style="margin: 0; padding: 0">
+                <p class="text-center" style="
+               color: #626262;
+               font-family: Montserrat, sans-serif;
+               font-size: 14px;
+               font-weight: 400;
+               line-height: 1.3;
+               margin: auto;
+               margin-bottom: 0px;
+               padding: 0;
+               text-align: center;
+               width: 90%;
+               ">
+                    Approval member name: ${
+                      admin.name.charAt(0).toUpperCase() + admin.name.slice(1)
+                    }
+                </p>
+            </th>
+        </tr>
+    </tbody>
+</table>
+<table class="spacer" style="
+   border-collapse: collapse;
+   border-spacing: 0;
+   padding: 0;
+   vertical-align: top;
+   width: 100%;
+   ">
+    <tbody>
+        <tr style="padding: 0; vertical-align: top">
+            <td height="10" style="
+            -moz-hyphens: auto;
+            -webkit-hyphens: auto;
+            border-collapse: collapse !important;
+            hyphens: auto;
+            margin: 0;
+            mso-line-height-rule: exactly;
+            padding: 0;
+            vertical-align: top;
+            word-wrap: break-word;
+            "></td>
+        </tr>
+    </tbody>
+</table>
+<table width="100%" style="
+   border-collapse: collapse;
+   border-spacing: 0;
+   padding: 0;
+   vertical-align: top;
+   ">
+    <tbody>
+        <tr style="padding: 0; vertical-align: top">
+            <th style="margin: 0; padding: 0">
+                <p class="text-center" style="
+               color: #626262;
+               font-family: Montserrat, sans-serif;
+               font-size: 14px;
+               font-weight: 400;
+               line-height: 1.3;
+               margin: auto;
+               margin-bottom: 0px;
+               padding: 0;
+               text-align: center;
+               width: 90%;
+               ">
+                Approval member email: ${admin.email}
+                </p>
+            </th>
+        </tr>
+    </tbody>
+</table>
+<table class="spacer" style="
+   border-collapse: collapse;
+   border-spacing: 0;
+   padding: 0;
+   vertical-align: top;
+   width: 100%;
+   ">
+    <tbody>
+        <tr style="padding: 0; vertical-align: top">
+            <td height="20" style="
+            -moz-hyphens: auto;
+            -webkit-hyphens: auto;
+            border-collapse: collapse !important;
+            hyphens: auto;
+            margin: 0;
+            mso-line-height-rule: exactly;
+            padding: 0;
+            vertical-align: top;
+            word-wrap: break-word;
+            ">
+                &nbsp;
+            </td>
+        </tr>
+    </tbody>
+</table>
+<table width="100%" style="
+   border-collapse: collapse;
+   border-spacing: 0;
+   padding: 0;
+   vertical-align: top;
+   ">
+    <tbody>
+        <tr style="padding: 0; vertical-align: top">
+            <th style="margin: 0; padding: 0">
+                <p class="text-center" style="
+               color: #626262;
+               font-family: Montserrat, sans-serif;
+               font-size: 14px;
+               font-weight: 400;
+               line-height: 1.3;
+               margin: auto;
+               margin-bottom: 0px;
+               padding: 0;
+               text-align: center;
+               width: 90%;
+               ">
+                    Approved member name: ${player.name}
+                </p>
+            </th>
+        </tr>
+    </tbody>
+</table>
+<table class="spacer" style="
+   border-collapse: collapse;
+   border-spacing: 0;
+   padding: 0;
+   vertical-align: top;
+   width: 100%;
+   ">
+    <tbody>
+        <tr style="padding: 0; vertical-align: top">
+            <td height="10" style="
+            -moz-hyphens: auto;
+            -webkit-hyphens: auto;
+            border-collapse: collapse !important;
+            hyphens: auto;
+            margin: 0;
+            mso-line-height-rule: exactly;
+            padding: 0;
+            vertical-align: top;
+            word-wrap: break-word;
+            "></td>
+        </tr>
+    </tbody>
+</table>
+<table width="100%" style="
+   border-collapse: collapse;
+   border-spacing: 0;
+   padding: 0;
+   vertical-align: top;
+   ">
+    <tbody>
+        <tr style="padding: 0; vertical-align: top">
+            <th style="margin: 0; padding: 0">
+                <p class="text-center" style="
+               color: #626262;
+               font-family: Montserrat, sans-serif;
+               font-size: 14px;
+               font-weight: 400;
+               line-height: 1.3;
+               margin: auto;
+               margin-bottom: 0px;
+               padding: 0;
+               text-align: center;
+               width: 90%;
+               ">
+                Approved member email: ${player.email}
+                </p>
+            </th>
+        </tr>
+    </tbody>
+</table>
       `;
     },
   };
