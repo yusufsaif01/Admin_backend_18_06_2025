@@ -23,7 +23,7 @@
     "host": {
         "doc": "mailer host",
         "format": "String",
-        "default": "139.59.77.111",
+        "default": "",
         "env": "MAILER_HOST",
         "arg": "mailer_host"
     },

@@ -10,9 +10,10 @@
     "start": "npm run gen-api-docs && node app.js"
   },
   "dependencies": {
+    "@azure/communication-email": "^1.0.0",
     "@hapi/joi": "^15.1.1",
     "aws-sdk": "^2.524.0",
-    "bcrypt": "^3.0.6",
+    "bcrypt": "^5.1.1",
     "bluebird": "^3.5.5",
     "convict": "^5.1.0",
     "cookie-parser": "~1.4.4",

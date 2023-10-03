@@ -1,5 +1,5 @@
 const convict = require("convict");
-
+const azureMailer = require("./configs/azureMailer.json");
 const app = require("./configs/app");
 const logger = require("./configs/logger");
 const server = require("./configs/server");
@@ -13,6 +13,7 @@ const mailer = require("./configs/mailer");
 var config = convict({
 	app,
 	logger,
+	azureMailer,
 	db,
 	server,
 	helper,
