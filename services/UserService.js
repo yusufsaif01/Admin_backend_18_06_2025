@@ -228,6 +228,7 @@ class UserService extends BaseService {
             let loginDetails = await this.loginUtilityInst.findOne({ user_id: user_id })
             if (loginDetails) {
                 let date = Date.now()
+                console.log("before findOneAndUpdate");
                 await this.loginUtilityInst.findOneAndUpdate({ user_id: user_id }, { is_deleted: true, deleted_at: date })
                 await this.manageConnection(user_id);
                 await this.deleteEmploymentContracts(user_id);

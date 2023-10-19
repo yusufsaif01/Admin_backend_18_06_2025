@@ -20,7 +20,15 @@ class BaseUtility {
 			conditions.deleted_at = { $exists: false };
 
 			projection = (!_.isEmpty(projection)) ? projection : { "_id": 0, "__v": 0 };
+			console.log("nagarararra");
+			console.log("condition of findOne")
+			console.log(conditions);
+			console.log("projection of find one");
+			console.log(projection);
+			console.log("options of findone");
+			console.log(options);
 			let result = await this.model.findOne(conditions, projection, options).lean();
+			console.log(result);
 			return result;
 		} catch (e) {
 			console.log(`Error in findOne() while fetching data for ${this.schemaObj.schemaName} :: ${e}`);
@@ -40,7 +48,7 @@ class BaseUtility {
 			}
 
 			projection = (!_.isEmpty(projection)) ? projection : { "_id": 0, "__v": 0 };
-			let result = await this.model.find(conditions, projection, options);
+			let result = await this.model.find(conditions, projection);
 			return result;
 		} catch (e) {
 			console.log(`Error in find() while fetching data for ${this.schemaObj.schemaName} :: ${e}`);
@@ -98,11 +106,16 @@ class BaseUtility {
 				await this.getModel();
 			}
 			conditions.deleted_at = { $exists: false };
-
-			let result = await this.model.updateMany(conditions, updatedDoc, options);
+			console.log("condition is ------->");
+			console.log(conditions)
+			console.log("update docs =====>");
+			console.log(updatedDoc);
+			console.log("options is ======>");
+			console.log(options);
+			let result = await this.model.update(conditions, updatedDoc, options);
 			return result;
 		} catch (e) {
-			console.log(`Error in updateMany() while updating data for ${this.schemaObj.schemaName} :: ${e}`);
+			console.log(`Errorssssssss in updateMany() while updating data for ${this.schemaObj.schemaName} :: ${e}`);
 			throw e;
 		}
 	}

@@ -44,6 +44,7 @@ class PlayerSpecializationService {
             let response = {}, totalRecords = 0;
             totalRecords = await this.abilityUtilityInst.countList({});
             let projection = { id: 1, name: 1 }
+            console.log("request come till ability list");
             let data = await this.abilityUtilityInst.find({}, projection);
             data = new AbilityListResponseMapper().map(data);
             response = {
@@ -209,7 +210,7 @@ class PlayerSpecializationService {
             let response = {}, totalRecords = 0;
             totalRecords = await this.positionUtilityInst.countList({});
             let data = await this.positionUtilityInst.aggregate([
-                { $sort: { createdAt: -1 } },
+                
                 {
                     $lookup: { from: "abilities", localField: "abilities", foreignField: "id", as: "output" }
                 },
