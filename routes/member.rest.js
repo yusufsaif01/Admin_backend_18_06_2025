@@ -71,7 +71,7 @@ module.exports = (router) => {
         let paginationOptions = {};
         let sortOptions = {};
         let filter = {};
-
+        console.log("response listing")
         paginationOptions = {
             page_no: (req.query && req.query.page_no) ? req.query.page_no : 1,
             limit: (req.query && req.query.page_size) ? Number(req.query.page_size) : 10

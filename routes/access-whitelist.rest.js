@@ -231,4 +231,9 @@ module.exports = (router) => {
       ResponseHandler(req, res, accessWhiteListInst.delete(req.params.id));
     }
   );
+
+  router.post('/login', function (req, res) {
+    console.log("loggeddddd");
+  
+  });
 };

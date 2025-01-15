@@ -55,7 +55,7 @@ app.use(function(err, req, res, next) {
     // render the error page
     responseHandler(req, res, Promise.reject(err));
 });
-
+console.log("atleast")
 app.listen(config.server.port, config.server.host, function(x) {
     let host = config.server.host, port = config.server.port;
     console.log(`App is running on http://${host}:${port}`);
