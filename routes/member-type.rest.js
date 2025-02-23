@@ -39,4 +39,5 @@ module.exports = (router) => {
         let serviceInst = new MemberTypeService();
         return responseHandler(req, res, serviceInst.getMemberTypeList());
     });
+     
 };

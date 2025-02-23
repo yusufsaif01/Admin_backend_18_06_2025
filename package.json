@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@azure/communication-email": "^1.0.0",
+    "@azure/storage-blob": "^12.16.0",
     "@hapi/joi": "^15.1.1",
     "aws-sdk": "^2.524.0",
     "bcrypt": "^5.1.1",
@@ -25,9 +26,11 @@
     "moment": "^2.25.3",
     "mongoose": "^5.9.4",
     "morgan": "~1.9.1",
+    "multer": "*",
     "nodemailer": "^6.3.0",
     "prompts": "^2.2.1",
     "redis": "^3.0.2",
+    "uuid": "^3.3.2",
     "winston": "^3.2.1",
     "winston-daily-rotate-file": "^4.1.0"
   },

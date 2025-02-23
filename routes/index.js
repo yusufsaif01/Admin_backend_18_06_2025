@@ -8,12 +8,14 @@ const clubAcademyDocuments = require('./club-academy-documents.rest');
 const employmentContract = require('./employment-contract.rest');
 const userAuth = require('./userAuth')
 const accessWhitelist = require('./access-whitelist.rest');
+const ads = require('./ads.rest')
 const checkAccessToken = require("../middleware/auth/access-token");
 class Route {
 	loadRoutes(app) {
 		const apiRouter = express.Router();
 		userAuth(apiRouter);
 		locationRoutes(apiRouter);
+		ads(apiRouter);
 		memberRoutes(apiRouter);
 		memberTypeRoutes(apiRouter);
 		playerSpecializationRoutes(apiRouter);
