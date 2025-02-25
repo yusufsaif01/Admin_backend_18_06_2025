@@ -6,26 +6,24 @@ const { BlobServiceClient } = require("@azure/storage-blob");
 const { v1: uuidv1 } = require("uuid");
 
 module.exports = (router) => {
-  // ✅ Use memory storage to upload images directly
+  //Use memory storage to upload images directly
   const upload = multer({ storage: multer.memoryStorage() });
 
-  // ✅ Azure Storage Configuration
+  //Azure Storage Configuration
   const AZURE_STORAGE_CONNECTION_STRING =
     "DefaultEndpointsProtocol=https;AccountName=dytstorage;AccountKey=adrbqNi3IgyuPDfiJVOGg9cw/X9RqaPeoJz9o2+/n292oWxMP43zgHvSL5X0BBWoaukwuq0Zqayk+AStsbnsBg==;EndpointSuffix=core.windows.net";
 
-  // ✅ Create Blob Service Client
+  //Create Blob Service Client
   const blobServiceClient = BlobServiceClient.fromConnectionString(
     AZURE_STORAGE_CONNECTION_STRING
   );
   const containerName = "dytimagescontainer";
   const containerClient = blobServiceClient.getContainerClient(containerName);
 
-  // ✅ Route for Uploading Ads
+  //Route for Uploading Ads
   router.post("/add/ads-details", upload.array("images"), async (req, res) => {
     try {
-      console.log("Incoming Files:", req.files);
-      console.log("Incoming Body:", req.body);
-
+      
       if (!req.files || req.files.length === 0) {
         return res.status(400).json({ message: "No files uploaded!" });
       }
@@ -70,4 +68,31 @@ module.exports = (router) => {
       return res.status(500).json({ message: "Internal Server Error", error });
     }
   });
+
+  router.get("/member/ads/list", checkAuthToken, async (req, res) => {
+    try {
+      console.log("req check", req.query);
+      let adsServiceInst = new AdsService();
+      return responseHandler(req, res, adsServiceInst.adsList());
+    } catch (error) {
+      console.log(error);
+    }
+  });
+  
+  router.delete("/member/ads-delete/:user_id", async (req, res) => {
+     try {
+       console.log("checkk delete=>", req.params.user_id)
+       if (!req.params.user_id) {
+         return Promise.reject(
+           new errors.ValidationFailed(RESPONSE_MESSAGE.USER_ID_REQUIRED)
+         );
+       }
+       let user_id = req.params.user_id;
+       let adsServiceInst = new AdsService();
+       return responseHandler(req, res, adsServiceInst.adsDelete(user_id));
+     } catch (e) {
+       console.log(e);
+       responseHandler(req, res, Promise.reject(e));
+     }
+   });
 };

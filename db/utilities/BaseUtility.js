@@ -20,15 +20,9 @@ class BaseUtility {
 			conditions.deleted_at = { $exists: false };
 
 			projection = (!_.isEmpty(projection)) ? projection : { "_id": 0, "__v": 0 };
-			console.log("nagarararra");
-			console.log("condition of findOne")
-			console.log(conditions);
-			console.log("projection of find one");
-			console.log(projection);
-			console.log("options of findone");
-			console.log(options);
+			
 			let result = await this.model.findOne(conditions, projection, options).lean();
-			console.log(result);
+			
 			return result;
 		} catch (e) {
 			console.log(`Error in findOne() while fetching data for ${this.schemaObj.schemaName} :: ${e}`);
