@@ -28,7 +28,7 @@ class AdsService {
   }
   async adsList() {
     try {
-      let res = await this.adsUtilityInst.find();
+      let res = await this.adsUtilityInst.findAds();
       console.log("response check", res);
       return Promise.resolve(res);
     } catch (error) {
