@@ -1,60 +1,60 @@
 {
-    "db_host": {
-        "doc": "Database host name/IP",
-        "format": "String",
-        "default": "127.0.0.1:27017",
-        "env": "MONGO_HOST",
-        "arg": "mongo_host"
+    "db_host_prod": {
+      "doc": "Database host name/IP",
+      "format": "String",
+      "default": "mongodb://dytmongodbprod:dytmongodbprod4060@proddocumentdb.cluster-czwa2ugk4s5q.ap-south-1.docdb.amazonaws.com:27017/admin",
+      "env": "MONGO_HOST",
+      "arg": "mongo_host"
     },
-    "db_name": {
-        "doc": "Database name",
-        "format": "String",
-        "default": "YFTChain",
-        "env": "DB_NAME",
-        "arg": "db_name"
+    "db_host_dev": {
+      "doc": "Database name",
+      "format": "String",
+      "default": "mongodb://dytmongodb:DYTmongoEsPorts2028@devdocumentdb.cluster-czwa2ugk4s5q.ap-south-1.docdb.amazonaws.com:27017/admin",
+      "env": "DB_NAME",
+      "arg": "db_name"
     },
     "is_auth_enable": {
-        "doc": "if db authentication enables or not",
-        "format": "Boolean",
-        "default": false,
-        "env": "IS_DB_AUTH_ENABLE",
-        "arg": "is_db_auth_enable"
+      "doc": "if db authentication enables or not",
+      "format": "Boolean",
+      "default": false,
+      "env": "IS_DB_AUTH_ENABLE",
+      "arg": "is_db_auth_enable"
     },
     "db_user": {
-        "doc": "Database username",
-        "format": "String",
-        "default": "",
-        "env": "DB_USER",
-        "arg": "db_user"
+      "doc": "Database username",
+      "format": "String",
+      "default": "",
+      "env": "DB_USER",
+      "arg": "db_user"
     },
     "db_pass": {
-        "doc": "Database password",
-        "format": "String",
-        "default": "",
-        "env": "DB_PASSWORD",
-        "arg": "db_password"
+      "doc": "Database password",
+      "format": "String",
+      "default": "",
+      "env": "DB_PASSWORD",
+      "arg": "db_password"
     },
     "db_auth_source": {
-        "doc": "db auth source",
-        "format": "String",
-        "default": "admin",
-        "env": "DB_AUTH_SOURCE",
-        "arg": "db_auth_source"
+      "doc": "db auth source",
+      "format": "String",
+      "default": "admin",
+      "env": "DB_AUTH_SOURCE",
+      "arg": "db_auth_source"
     },
     "options": {
-        "useNewUrlParser": {
-            "doc": "mongoose's new URL parser",
-            "format": "Boolean",
-            "default": true,
-            "env": "USE_NEW_URL_PARSER",
-            "arg": "use_new_url_parser"
-        },
-        "useUnifiedTopology": {
-            "doc": "mongoose's useUnifiedTopology option",
-            "format": "Boolean",
-            "default": true,
-            "env": "USE_UNIFIED_TOPOLOGY",
-            "arg": "use_unified_topology"
-        }
+      "useNewUrlParser": {
+        "doc": "mongoose's new URL parser",
+        "format": "Boolean",
+        "default": true,
+        "env": "USE_NEW_URL_PARSER",
+        "arg": "use_new_url_parser"
+      },
+      "useUnifiedTopology": {
+        "doc": "mongoose's useUnifiedTopology option",
+        "format": "Boolean",
+        "default": true,
+        "env": "USE_UNIFIED_TOPOLOGY",
+        "arg": "use_unified_topology"
+      }
     }
-}
+  }
